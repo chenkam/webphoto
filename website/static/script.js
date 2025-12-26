@@ -188,52 +188,72 @@ function loadPhotos() {
     var fullscreenGallery = document.getElementById('fullscreenGallery');
     var navPhotoCount = document.getElementById('navPhotoCount');
     
-    // 显示加载动画
-    loadingSpinner.style.display = 'block';
-    emptyMessage.style.display = 'none';
-    fullscreenGallery.style.display = 'none';
+    // 显示加载动画，隐藏其他
+    if (loadingSpinner) loadingSpinner.style.display = 'block';
+    if (emptyMessage) emptyMessage.style.display = 'none';
+    if (fullscreenGallery) fullscreenGallery.style.display = 'none';
     
-    console.log('发送 API 请求...');
+    console.log('发送 API 请求: /api/photos');
     
     fetch('/api/photos')
         .then(function(response) {
-            console.log('收到响应:', response.status);
+            console.log('收到响应, 状态码:', response.status);
+            if (!response.ok) {
+                throw new Error('HTTP error ' + response.status);
+            }
             return response.json();
         })
         .then(function(result) {
-            console.log('解析结果:', result);
+            console.log('API返回数据:', JSON.stringify(result));
             
             // 隐藏加载动画
-            loadingSpinner.style.display = 'none';
+            if (loadingSpinner) loadingSpinner.style.display = 'none';
             
-            if (result.success) {
+            if (result && result.success) {
                 currentPhotos = result.photos || [];
-                navPhotoCount.textContent = currentPhotos.length;
+                if (navPhotoCount) navPhotoCount.textContent = currentPhotos.length;
                 
-                console.log('照片数量:', currentPhotos.length);
+                console.log('成功获取照片, 数量:', currentPhotos.length);
                 
                 if (currentPhotos.length === 0) {
-                    console.log('没有照片，显示空状态');
-                    emptyMessage.style.display = 'block';
+                    console.log('照片列表为空，显示空状态');
+                    if (emptyMessage) emptyMessage.style.display = 'block';
+                    if (fullscreenGallery) fullscreenGallery.style.display = 'none';
                 } else {
-                    console.log('显示照片画廊');
+                    console.log('开始显示照片画廊');
+                    if (emptyMessage) emptyMessage.style.display = 'none';
+                    if (fullscreenGallery) fullscreenGallery.style.display = 'block';
                     currentPhotoIndex = 0;
-                    fullscreenGallery.style.display = 'block';
                     showPhoto(0);
                 }
             } else {
-                console.error('API 返回失败:', result);
-                alert('加载失败: ' + (result.error || '未知错误'));
+                console.error('API返回失败:', result);
+                if (loadingSpinner) loadingSpinner.style.display = 'none';
+                if (emptyMessage) {
+                    emptyMessage.style.display = 'block';
+                    var h3 = emptyMessage.querySelector('h3');
+                    var p = emptyMessage.querySelector('p');
+                    if (h3) h3.textContent = '加载失败';
+                    if (p) p.textContent = (result && result.error) || '未知错误';
+                }
             }
         })
         .catch(function(error) {
-            console.error('加载失败:', error);
-            loadingSpinner.style.display = 'none';
-            alert('加载照片失败，请刷新页面重试\n错误: ' + error.message);
+            console.error('请求失败:', error);
+            if (loadingSpinner) loadingSpinner.style.display = 'none';
+            if (emptyMessage) {
+                emptyMessage.style.display = 'block';
+                var h3 = emptyMessage.querySelector('h3');
+                var p = emptyMessage.querySelector('p');
+                if (h3) h3.textContent = '网络错误';
+                if (p) p.textContent = error.message || '请检查网络连接';
+            }
         });
 }
 
 function showPhoto(index) {
+    console.log('showPhoto called, index:', index);
+    
     if (!currentPhotos || currentPhotos.length === 0) {
         console.log('没有照片可显示');
         return;
@@ -246,27 +266,44 @@ function showPhoto(index) {
     currentPhotoIndex = index;
     var photo = currentPhotos[index];
     
-    console.log('显示照片', index + 1, '/', currentPhotos.length, ':', photo.url);
+    if (!photo || !photo.url) {
+        console.error('照片数据无效:', photo);
+        return;
+    }
     
-    // 更新图片
+    console.log('显示照片', (index + 1) + '/' + currentPhotos.length, 'URL:', photo.url);
+    
+    // 获取图片元素
     var img = document.getElementById('fullscreenImage');
+    if (!img) {
+        console.error('找不到 fullscreenImage 元素');
+        return;
+    }
+    
+    // 先设置事件处理器，再设置 src（避免缓存图片错过事件）
+    img.onload = function() {
+        console.log('图片加载成功:', photo.url);
+        img.style.opacity = '1';
+    };
+    
+    img.onerror = function() {
+        console.error('图片加载失败:', photo.url);
+        img.style.opacity = '1';  // 即使失败也显示（可能是破损图标）
+    };
+    
+    // 淡出效果
     img.style.opacity = '0';
     
-    setTimeout(function() {
-        img.src = photo.url;
-        img.onload = function() {
-            img.style.opacity = '1';
-            console.log('图片加载成功');
-        };
-        img.onerror = function() {
-            console.error('图片加载失败:', photo.url);
-            alert('图片加载失败: ' + photo.url);
-        };
-    }, 150);
+    // 设置新图片源
+    img.src = photo.url;
     
-    // 更新计数
-    document.getElementById('currentPhotoNum').textContent = index + 1;
-    document.getElementById('totalPhotoNum').textContent = currentPhotos.length;
+    // 更新计数器
+    var currentNum = document.getElementById('currentPhotoNum');
+    var totalNum = document.getElementById('totalPhotoNum');
+    if (currentNum) currentNum.textContent = index + 1;
+    if (totalNum) totalNum.textContent = currentPhotos.length;
+    
+    console.log('showPhoto完成, 等待图片加载');
 }
 
 // ==================== 控制按钮 ====================

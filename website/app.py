@@ -132,6 +132,17 @@ def index():
         return str(e), 500
 
 
+@app.route('/debug')
+def debug_page():
+    """调试页面"""
+    app.logger.info('访问调试页面')
+    try:
+        return render_template('debug.html')
+    except Exception as e:
+        app.logger.error('渲染调试页面失败: %s', str(e))
+        return str(e), 500
+
+
 @app.route('/api/photos', methods=['GET'])
 def get_photos():
     """获取所有照片列表"""

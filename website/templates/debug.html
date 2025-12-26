@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>调试页面</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1a1a2e;
+            color: #eee;
+        }
+        h1 { color: #4ecdc4; }
+        .test-section {
+            background: #16213e;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            border-left: 4px solid #4ecdc4;
+        }
+        .test-section h3 { color: #4ecdc4; margin-top: 0; }
+        .success { color: #2ecc71; }
+        .error { color: #e74c3c; }
+        .warning { color: #f39c12; }
+        pre {
+            background: #0f0f1a;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        button {
+            background: #4ecdc4;
+            color: #1a1a2e;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            margin: 5px;
+        }
+        button:hover { background: #3db3aa; }
+        img.test-img {
+            max-width: 200px;
+            max-height: 200px;
+            border: 2px solid #4ecdc4;
+            margin: 5px;
+        }
+        #photoGrid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Photo Gallery 调试页面</h1>
+    
+    <div class="test-section">
+        <h3>1. 测试 API 连接</h3>
+        <button onclick="testAPI()">测试 /api/photos</button>
+        <pre id="apiResult">点击按钮测试...</pre>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. 照片列表</h3>
+        <button onclick="loadPhotoList()">加载照片列表</button>
+        <pre id="photoList">点击按钮加载...</pre>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. 图片加载测试</h3>
+        <p>如果上面有照片，点击下面按钮测试图片是否能加载：</p>
+        <button onclick="testImages()">测试图片加载</button>
+        <div id="photoGrid"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. JavaScript 环境检测</h3>
+        <pre id="jsEnv"></pre>
+    </div>
+    
+    <div class="test-section">
+        <h3>5. 快速修复</h3>
+        <button onclick="window.location.href='/'">返回主页</button>
+        <button onclick="location.reload()">刷新调试页</button>
+        <button onclick="clearCache()">清除缓存刷新</button>
+    </div>
+
+    <script>
+        var photos = [];
+        
+        // 检测 JS 环境
+        document.getElementById('jsEnv').innerHTML = 
+            '<span class="success">✓ JavaScript 正常运行</span>\n' +
+            'User Agent: ' + navigator.userAgent + '\n' +
+            'URL: ' + window.location.href + '\n' +
+            '时间: ' + new Date().toLocaleString();
+        
+        function testAPI() {
+            var result = document.getElementById('apiResult');
+            result.innerHTML = '正在请求...';
+            
+            fetch('/api/photos')
+                .then(function(response) {
+                    result.innerHTML = '<span class="success">✓ HTTP ' + response.status + '</span>\n';
+                    result.innerHTML += 'Content-Type: ' + response.headers.get('Content-Type') + '\n';
+                    return response.text();
+                })
+                .then(function(text) {
+                    result.innerHTML += '\n原始响应:\n' + text;
+                    try {
+                        var json = JSON.parse(text);
+                        result.innerHTML += '\n\n<span class="success">✓ JSON 解析成功</span>';
+                        result.innerHTML += '\nsuccess: ' + json.success;
+                        result.innerHTML += '\nphotos 数量: ' + (json.photos ? json.photos.length : 'undefined');
+                    } catch (e) {
+                        result.innerHTML += '\n\n<span class="error">✗ JSON 解析失败: ' + e.message + '</span>';
+                    }
+                })
+                .catch(function(error) {
+                    result.innerHTML = '<span class="error">✗ 请求失败: ' + error.message + '</span>';
+                });
+        }
+        
+        function loadPhotoList() {
+            var result = document.getElementById('photoList');
+            result.innerHTML = '正在加载...';
+            
+            fetch('/api/photos')
+                .then(function(response) { return response.json(); })
+                .then(function(data) {
+                    if (data.success && data.photos) {
+                        photos = data.photos;
+                        if (photos.length === 0) {
+                            result.innerHTML = '<span class="warning">⚠ 照片列表为空（没有照片）</span>';
+                        } else {
+                            var html = '<span class="success">✓ 找到 ' + photos.length + ' 张照片</span>\n\n';
+                            photos.forEach(function(p, i) {
+                                html += (i + 1) + '. ' + p.filename + '\n';
+                                html += '   URL: ' + p.url + '\n';
+                                html += '   ID: ' + p.id + '\n\n';
+                            });
+                            result.innerHTML = html;
+                        }
+                    } else {
+                        result.innerHTML = '<span class="error">✗ API 返回失败</span>\n' + JSON.stringify(data);
+                    }
+                })
+                .catch(function(error) {
+                    result.innerHTML = '<span class="error">✗ 加载失败: ' + error.message + '</span>';
+                });
+        }
+        
+        function testImages() {
+            var grid = document.getElementById('photoGrid');
+            grid.innerHTML = '';
+            
+            if (photos.length === 0) {
+                grid.innerHTML = '<span class="warning">⚠ 请先点击"加载照片列表"</span>';
+                return;
+            }
+            
+            photos.forEach(function(photo, i) {
+                var img = document.createElement('img');
+                img.className = 'test-img';
+                img.alt = photo.filename;
+                img.onload = function() {
+                    this.style.borderColor = '#2ecc71';
+                    console.log('图片加载成功:', photo.url);
+                };
+                img.onerror = function() {
+                    this.style.borderColor = '#e74c3c';
+                    this.alt = '加载失败: ' + photo.url;
+                    console.error('图片加载失败:', photo.url);
+                };
+                img.src = photo.url;
+                grid.appendChild(img);
+            });
+        }
+        
+        function clearCache() {
+            if ('caches' in window) {
+                caches.keys().then(function(names) {
+                    names.forEach(function(name) {
+                        caches.delete(name);
+                    });
+                });
+            }
+            location.reload(true);
+        }
+    </script>
+</body>
+</html>
+

@@ -3,75 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>电子相册 - Photo Gallery</title>
+    <title>沉浸式 3D 画廊 - Photo Gallery</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>📷 我的电子相册</h1>
-            <p class="subtitle">上传并浏览您的美好回忆</p>
-        </header>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">🎨</span>
+                <span class="logo-text">3D 画廊</span>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-page="gallery">
+                        <span class="nav-icon">🖼️</span>
+                        <span>3D 画廊</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="upload">
+                        <span class="nav-icon">📤</span>
+                        <span>上传照片</span>
+                    </a>
+                </li>
+                <li class="nav-item photo-count-nav">
+                    <span class="count-badge" id="navPhotoCount">0</span>
+                    <span class="count-label">张照片</span>
+                </li>
+            </ul>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
 
-        <!-- 上传区域 -->
-        <section class="upload-section">
+    <!-- 3D 画廊页面 -->
+    <section id="galleryPage" class="page active">
+        <div class="gallery-hero">
+            <h1 class="gallery-title">沉浸式 3D 画廊</h1>
+            <p class="gallery-subtitle">探索您的美好回忆</p>
+        </div>
+
+        <div id="loadingSpinner" class="loading-spinner">
+            <div class="spinner"></div>
+            <p>加载中...</p>
+        </div>
+
+        <!-- 3D 画廊容器 -->
+        <div id="gallery3D" class="gallery-3d-container">
+            <!-- 照片卡片将动态插入这里 -->
+        </div>
+
+        <!-- 空状态 -->
+        <div id="emptyMessage" class="empty-message" style="display: none;">
+            <div class="empty-icon">📸</div>
+            <h3>画廊空空如也</h3>
+            <p>上传第一张照片，开启您的艺术之旅</p>
+            <button class="btn btn-primary" onclick="switchPage('upload')">
+                <span class="nav-icon">📤</span>
+                立即上传
+            </button>
+        </div>
+
+        <!-- 视图切换按钮 -->
+        <div class="view-controls" id="viewControls" style="display: none;">
+            <button class="view-btn active" data-view="3d" title="3D 视图">
+                <span>🎲</span>
+            </button>
+            <button class="view-btn" data-view="grid" title="网格视图">
+                <span>⊞</span>
+            </button>
+            <button class="view-btn" data-view="carousel" title="轮播视图">
+                <span>⟲</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- 上传页面 -->
+    <section id="uploadPage" class="page">
+        <div class="upload-container">
+            <div class="upload-hero">
+                <h1>上传照片</h1>
+                <p>分享您的精彩瞬间</p>
+            </div>
+
             <div class="upload-card">
-                <h2>上传照片</h2>
                 <form id="uploadForm" enctype="multipart/form-data">
-                    <div class="file-input-wrapper">
+                    <div class="file-drop-area" id="fileDropArea">
                         <input type="file" id="photoInput" name="photo" accept="image/*" required>
-                        <label for="photoInput" class="file-label">
-                            <span class="upload-icon">📁</span>
-                            <span class="upload-text">选择照片</span>
-                        </label>
-                        <div id="fileName" class="file-name"></div>
+                        <div class="file-drop-content">
+                            <div class="upload-icon-large">📁</div>
+                            <h3>拖拽照片到这里</h3>
+                            <p>或者</p>
+                            <label for="photoInput" class="file-label-new">
+                                选择照片
+                            </label>
+                            <p class="file-hint">支持 JPG, PNG, GIF, WEBP（最大 16MB）</p>
+                        </div>
+                        <div id="filePreview" class="file-preview" style="display: none;">
+                            <img id="previewImage" src="" alt="预览">
+                            <button type="button" class="remove-preview" id="removePreview">&times;</button>
+                        </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="description">照片描述（可选）</label>
-                        <textarea id="description" name="description" rows="3" placeholder="为这张照片添加一段描述..."></textarea>
+                        <label for="description">
+                            <span class="label-icon">💬</span>
+                            照片描述（可选）
+                        </label>
+                        <textarea id="description" name="description" rows="4" placeholder="为这张照片添加一段描述，记录美好瞬间..."></textarea>
                     </div>
                     
-                    <button type="submit" class="btn btn-primary" id="uploadBtn">
-                        <span class="btn-text">上传照片</span>
+                    <button type="submit" class="btn btn-primary btn-large" id="uploadBtn">
+                        <span class="btn-text">
+                            <span class="btn-icon">🚀</span>
+                            上传到画廊
+                        </span>
                         <span class="loader" style="display: none;"></span>
                     </button>
                 </form>
+                
                 <div id="uploadMessage" class="message"></div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- 相册浏览区域 -->
-        <section class="gallery-section">
-            <div class="gallery-header">
-                <h2>相册浏览</h2>
-                <div class="photo-count">共 <span id="photoCount">0</span> 张照片</div>
-            </div>
-            
-            <div id="loadingSpinner" class="loading-spinner">
-                <div class="spinner"></div>
-                <p>加载中...</p>
-            </div>
-            
-            <div id="gallery" class="gallery-grid"></div>
-            
-            <div id="emptyMessage" class="empty-message" style="display: none;">
-                <div class="empty-icon">📸</div>
-                <p>还没有照片，上传第一张吧！</p>
-            </div>
-        </section>
-    </div>
-
-    <!-- 照片查看模态框 -->
+    <!-- 照片详情模态框 -->
     <div id="photoModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <img id="modalImage" src="" alt="">
-            <div class="modal-info">
-                <h3 id="modalOriginalName"></h3>
-                <p id="modalDescription"></p>
-                <p class="modal-time" id="modalTime"></p>
-                <button class="btn btn-danger" id="deleteBtn">删除照片</button>
+        <div class="modal-backdrop" id="modalBackdrop"></div>
+        <div class="modal-content-new">
+            <button class="modal-close" id="modalClose">
+                <span>&times;</span>
+            </button>
+            <div class="modal-image-container">
+                <img id="modalImage" src="" alt="">
+                <div class="modal-nav">
+                    <button class="modal-nav-btn" id="prevPhoto" title="上一张">‹</button>
+                    <button class="modal-nav-btn" id="nextPhoto" title="下一张">›</button>
+                </div>
+            </div>
+            <div class="modal-info-new">
+                <h2 id="modalOriginalName"></h2>
+                <p id="modalDescription" class="modal-description"></p>
+                <div class="modal-meta">
+                    <span class="modal-time" id="modalTime"></span>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-danger" id="deleteBtn">
+                        <span>🗑️</span>
+                        删除照片
+                    </button>
+                </div>
             </div>
         </div>
     </div>

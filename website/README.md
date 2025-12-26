@@ -2,14 +2,32 @@
 
 一个简单而美观的电子相册Web应用，支持照片上传、浏览和管理。
 
-## 功能特性
+## ✨ 功能特性
 
-- 📤 **照片上传** - 支持上传 PNG、JPG、JPEG、GIF、WEBP 格式的照片
-- 🖼️ **相册浏览** - 响应式网格布局展示照片
-- 🔍 **照片查看** - 点击查看大图和详细信息
-- 📝 **照片描述** - 为每张照片添加描述
-- 🗑️ **照片删除** - 可删除不需要的照片
-- 📱 **响应式设计** - 完美适配桌面和移动设备
+### 🎨 沉浸式 3D 画廊
+- **3D 视图** - 照片以 3D 卡片形式浮动展示，支持鼠标交互
+- **网格视图** - 经典网格布局，快速浏览
+- **轮播视图** - 3D 轮播效果，自动旋转展示
+- **视图切换** - 右下角一键切换不同展示模式
+
+### 📤 优化的上传体验
+- **拖拽上传** - 支持拖拽文件到上传区域
+- **图片预览** - 上传前实时预览照片
+- **进度反馈** - 清晰的上传状态提示
+- **智能导航** - 上传成功后自动跳转到画廊
+
+### 🖼️ 强大的浏览功能
+- **分页浏览** - 上传和浏览页面分离，专注浏览体验
+- **照片详情** - 点击查看大图和完整信息
+- **前后翻页** - 模态框内快速切换照片
+- **键盘导航** - 支持方向键和 ESC 键操作
+
+### 🎯 其他特性
+- 📝 **照片描述** - 为每张照片添加个性化描述
+- 🗑️ **照片管理** - 轻松删除不需要的照片
+- 📱 **响应式设计** - 完美适配桌面、平板和手机
+- 🎭 **现代 UI** - 渐变色、动画效果、毛玻璃等现代设计元素
+- ⚡ **流畅动画** - 页面切换、卡片悬停等丝滑动画
 
 ## 技术栈
 
@@ -195,24 +213,50 @@ source venv/bin/activate
 python test_app.py
 ```
 
-## 维护命令
+## 🎛️ 服务管理
+
+### 使用管理脚本（推荐）
+
+项目提供了丰富的管理脚本，让服务管理变得简单：
 
 ```bash
-# 查看服务状态
-sudo systemctl status photo-gallery
+# 给脚本执行权限（首次使用）
+chmod +x *.sh
 
-# 重启服务
-sudo systemctl restart photo-gallery
+# 综合管理工具（推荐）
+./manage.sh
 
-# 查看日志
-sudo journalctl -u photo-gallery -f
+# 或使用独立脚本
+./start_service.sh    # 启动服务
+./stop.sh             # 停止服务
+./restart_service.sh  # 重启服务
+./status.sh           # 查看状态
+./logs.sh             # 查看日志
+```
+
+### 使用 systemctl 命令
+
+```bash
+# 启动服务
+sudo systemctl start photo-gallery
 
 # 停止服务
 sudo systemctl stop photo-gallery
 
+# 重启服务
+sudo systemctl restart photo-gallery
+
+# 查看状态
+sudo systemctl status photo-gallery
+
+# 查看日志
+sudo journalctl -u photo-gallery -f
+
 # 备份数据
 tar -czf photo-gallery-backup-$(date +%Y%m%d).tar.gz uploads/ metadata.json
 ```
+
+详细说明请查看 [SCRIPTS_GUIDE.md](SCRIPTS_GUIDE.md)
 
 ## 目录结构
 
@@ -274,6 +318,28 @@ chown -R $USER:$USER .
 3. **文件安全**:
    - 定期检查上传的文件
    - 考虑添加图片格式验证
+
+## 📖 文档
+
+### 用户文档
+- **[README.md](README.md)** - 项目说明和部署指南（本文件）
+- **[USER_GUIDE.md](USER_GUIDE.md)** - 用户使用指南
+- **[QUICKSTART.md](QUICKSTART.md)** - 快速开始指南
+- **[QUICK_REFERENCE.md](QUICK_REFERENCE.md)** - 快速参考卡片 ⚡
+
+### 功能文档
+- **[FEATURES_3D.md](FEATURES_3D.md)** - 3D 画廊功能详解
+- **[DEMO.md](DEMO.md)** - 功能演示说明
+- **[CHANGELOG.md](CHANGELOG.md)** - 版本更新日志
+
+### 部署文档
+- **[INSTALL_GUIDE.md](INSTALL_GUIDE.md)** - 详细安装指南（Python 2）
+- **[DEPLOYMENT_CHECKLIST.md](DEPLOYMENT_CHECKLIST.md)** - 部署检查清单
+- **[QUICK_FIX.md](QUICK_FIX.md)** - 快速修复指南
+
+### 管理文档
+- **[SCRIPTS_GUIDE.md](SCRIPTS_GUIDE.md)** - 脚本使用指南 🎛️
+- **[README_PY2.md](README_PY2.md)** - Python 2 专用说明
 
 ## 许可证
 

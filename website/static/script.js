@@ -20,6 +20,14 @@ function init() {
     // 绑定控制按钮
     setupControls();
     
+    // 绑定空状态上传按钮
+    var emptyUploadBtn = document.getElementById('emptyUploadBtn');
+    if (emptyUploadBtn) {
+        emptyUploadBtn.addEventListener('click', function() {
+            switchPage('upload');
+        });
+    }
+    
     // 加载照片
     switchPage('gallery');
 }

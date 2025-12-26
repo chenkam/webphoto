@@ -34,18 +34,25 @@ echo ""
 echo "步骤 1/6: 安装系统依赖..."
 if [ "$OS" = "ubuntu" ] || [ "$OS" = "debian" ]; then
     sudo apt update
-    sudo apt install -y python3 python3-pip python3-venv
+    sudo apt install -y python python-pip python-virtualenv
 elif [ "$OS" = "centos" ] || [ "$OS" = "rhel" ]; then
-    sudo yum install -y python3 python3-pip
+    sudo yum install -y python python-pip python-virtualenv
 else
-    echo -e "${YELLOW}警告: 未识别的系统，请手动安装 Python3${NC}"
+    echo -e "${YELLOW}警告: 未识别的系统，请手动安装 Python2${NC}"
 fi
 
 # 创建虚拟环境
 echo ""
 echo "步骤 2/6: 创建Python虚拟环境..."
 if [ ! -d "venv" ]; then
-    python3 -m venv venv
+    # 尝试 Python 2
+    if command -v virtualenv &> /dev/null; then
+        virtualenv venv
+    elif command -v python2 &> /dev/null; then
+        python2 -m virtualenv venv
+    else
+        python -m virtualenv venv
+    fi
     echo -e "${GREEN}虚拟环境创建完成${NC}"
 else
     echo -e "${YELLOW}虚拟环境已存在，跳过创建${NC}"

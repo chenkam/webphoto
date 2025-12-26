@@ -19,12 +19,26 @@
 
 ## 系统要求
 
-- Python 3.7+
+- **Python 2.7** 或 Python 3.7+（已适配 Python 2）
 - Linux 操作系统（推荐 Ubuntu/Debian/CentOS）
+
+> **注意**：本项目现已完全支持 Python 2.7 + Flask 1.1.4，可直接在 CentOS 7 等系统上使用。
 
 ## 快速部署
 
-### 方法一：使用部署脚本（推荐）
+### 🚀 Python 2 用户（CentOS 7 等）
+
+如果你使用 Python 2.7，请使用专门的修复脚本：
+
+```bash
+cd /data/home/webs/webphoto/website
+chmod +x fix_service_py2.sh
+./fix_service_py2.sh
+```
+
+**详细说明**：查看 [INSTALL_GUIDE.md](INSTALL_GUIDE.md) 或 [QUICK_FIX.md](QUICK_FIX.md)
+
+### 方法一：使用部署脚本（Python 3）
 
 1. 克隆或上传项目文件到服务器
 2. 运行部署脚本：
@@ -40,6 +54,7 @@ sudo ./deploy.sh
 
 #### 1. 安装依赖
 
+**Python 3 (推荐):**
 ```bash
 # 安装 Python3 和 pip
 sudo apt update
@@ -51,6 +66,22 @@ source venv/bin/activate
 
 # 安装 Python 依赖
 pip install -r requirements.txt
+```
+
+**Python 2 (CentOS 7 等):**
+```bash
+# 安装 Python2 和 virtualenv
+sudo yum install -y python python-pip python-virtualenv
+
+# 创建虚拟环境
+virtualenv venv
+source venv/bin/activate
+
+# 升级 pip
+pip install --upgrade "pip<21.0"
+
+# 安装依赖
+pip install Flask==1.1.4 Werkzeug==1.0.1 gunicorn
 ```
 
 #### 2. 创建必要的目录

@@ -1,40 +1,68 @@
+# -*- coding: utf-8 -*-
+from __future__ import print_function, unicode_literals
 from flask import Flask, render_template, request, jsonify, send_from_directory
 import os
 from werkzeug.utils import secure_filename
 import json
 from datetime import datetime
 import uuid
-from config import Config
+import sys
+
+# Python 2/3 兼容性
+if sys.version_info[0] < 3:
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
 
 app = Flask(__name__)
-app.config.from_object(Config)
 
 # 配置
-UPLOAD_FOLDER = app.config['UPLOAD_FOLDER']
-ALLOWED_EXTENSIONS = app.config['ALLOWED_EXTENSIONS']
-METADATA_FILE = app.config['METADATA_FILE']
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif', 'webp'])
+MAX_FILE_SIZE = 16 * 1024 * 1024  # 16MB
+METADATA_FILE = 'metadata.json'
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = MAX_FILE_SIZE
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') or 'your-secret-key-change-in-production'
+
 
 # 确保上传目录存在
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 
 def allowed_file(filename):
     """检查文件扩展名是否允许"""
+    if not isinstance(filename, (str, unicode if sys.version_info[0] < 3 else str)):
+        return False
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 def load_metadata():
     """加载照片元数据"""
     if os.path.exists(METADATA_FILE):
-        with open(METADATA_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
+        try:
+            with open(METADATA_FILE, 'r') as f:
+                content = f.read()
+                if sys.version_info[0] < 3 and isinstance(content, str):
+                    content = content.decode('utf-8')
+                return json.loads(content) if content else []
+        except Exception as e:
+            print("Error loading metadata: {}".format(str(e)))
+            return []
     return []
 
 
 def save_metadata(metadata):
     """保存照片元数据"""
-    with open(METADATA_FILE, 'w', encoding='utf-8') as f:
-        json.dump(metadata, f, ensure_ascii=False, indent=2)
+    try:
+        with open(METADATA_FILE, 'w') as f:
+            content = json.dumps(metadata, ensure_ascii=False, indent=2)
+            if sys.version_info[0] < 3:
+                content = content.encode('utf-8')
+            f.write(content)
+    except Exception as e:
+        print("Error saving metadata: {}".format(str(e)))
 
 
 @app.route('/')
@@ -56,21 +84,21 @@ def get_photos():
 def upload_photo():
     """上传照片"""
     if 'photo' not in request.files:
-        return jsonify({'success': False, 'error': '没有文件被上传'}), 400
+        return jsonify({'success': False, 'error': u'没有文件被上传'}), 400
     
     file = request.files['photo']
     
     if file.filename == '':
-        return jsonify({'success': False, 'error': '没有选择文件'}), 400
+        return jsonify({'success': False, 'error': u'没有选择文件'}), 400
     
     if not allowed_file(file.filename):
-        return jsonify({'success': False, 'error': '不支持的文件类型'}), 400
+        return jsonify({'success': False, 'error': u'不支持的文件类型'}), 400
     
     try:
         # 生成唯一文件名
         original_filename = secure_filename(file.filename)
         ext = original_filename.rsplit('.', 1)[1].lower()
-        unique_filename = f"{uuid.uuid4().hex}.{ext}"
+        unique_filename = "{}.{}".format(uuid.uuid4().hex, ext)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
         
         # 保存文件
@@ -78,6 +106,8 @@ def upload_photo():
         
         # 获取描述
         description = request.form.get('description', '')
+        if sys.version_info[0] < 3 and isinstance(description, str):
+            description = description.decode('utf-8')
         
         # 保存元数据
         metadata = load_metadata()
@@ -87,7 +117,7 @@ def upload_photo():
             'original_name': original_filename,
             'description': description,
             'upload_time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'url': f'/uploads/{unique_filename}'
+            'url': '/uploads/{}'.format(unique_filename)
         }
         metadata.append(photo_info)
         save_metadata(metadata)
@@ -103,10 +133,14 @@ def delete_photo(photo_id):
     """删除照片"""
     try:
         metadata = load_metadata()
-        photo = next((p for p in metadata if p['id'] == photo_id), None)
+        photo = None
+        for p in metadata:
+            if p['id'] == photo_id:
+                photo = p
+                break
         
         if not photo:
-            return jsonify({'success': False, 'error': '照片不存在'}), 404
+            return jsonify({'success': False, 'error': u'照片不存在'}), 404
         
         # 删除文件
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], photo['filename'])
@@ -130,5 +164,5 @@ def uploaded_file(filename):
 
 
 if __name__ == '__main__':
-    app.run(host=app.config['HOST'], port=app.config['PORT'], debug=app.config['DEBUG'])
+    app.run(host='0.0.0.0', port=5000, debug=False)
 

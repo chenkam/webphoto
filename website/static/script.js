@@ -170,6 +170,7 @@ function showMessage(type, text) {
 
 // ==================== 加载照片列表 ====================
 function loadPhotos() {
+    console.log('开始加载照片...');
     loadingSpinner.style.display = 'block';
     fullscreenGallery.style.display = 'none';
     emptyMessage.style.display = 'none';
@@ -179,30 +180,37 @@ function loadPhotos() {
         return response.json();
     })
     .then(function(result) {
+        console.log('API 返回结果:', result);
+        loadingSpinner.style.display = 'none';
+        
         if (result.success) {
             currentPhotos = result.photos;
             navPhotoCount.textContent = currentPhotos.length;
             
             if (currentPhotos.length === 0) {
+                console.log('没有照片');
                 emptyMessage.style.display = 'block';
             } else {
+                console.log('找到', currentPhotos.length, '张照片');
                 currentPhotoIndex = 0;
-                showPhoto(currentPhotoIndex);
                 fullscreenGallery.style.display = 'block';
+                showPhoto(currentPhotoIndex);
             }
         }
     })
     .catch(function(error) {
         console.error('加载照片失败:', error);
-    })
-    .finally(function() {
         loadingSpinner.style.display = 'none';
+        alert('加载照片失败: ' + error.message);
     });
 }
 
 // ==================== 显示照片 ====================
 function showPhoto(index) {
-    if (currentPhotos.length === 0) return;
+    if (currentPhotos.length === 0) {
+        console.log('没有照片可显示');
+        return;
+    }
     
     // 确保索引在有效范围内
     if (index < 0) index = currentPhotos.length - 1;
@@ -211,12 +219,19 @@ function showPhoto(index) {
     currentPhotoIndex = index;
     var photo = currentPhotos[index];
     
+    console.log('显示照片:', photo.url);
+    
     // 更新图片（带淡入效果）
     fullscreenImage.style.opacity = '0';
     setTimeout(function() {
         fullscreenImage.src = photo.url;
         fullscreenImage.onload = function() {
             fullscreenImage.style.opacity = '1';
+            console.log('照片加载完成');
+        };
+        fullscreenImage.onerror = function() {
+            console.error('照片加载失败:', photo.url);
+            alert('照片加载失败: ' + photo.url);
         };
     }, 150);
     

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-box {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success { color: #2ecc71; font-weight: bold; }
+        .error { color: #e74c3c; font-weight: bold; }
+        #jsTest { display: none; }
+    </style>
+</head>
+<body>
+    <h1>JavaScript执行测试</h1>
+    
+    <div class="test-box">
+        <h3>测试1: HTML加载</h3>
+        <p class="success">✓ HTML页面加载成功</p>
+    </div>
+    
+    <div class="test-box">
+        <h3>测试2: JavaScript执行</h3>
+        <p id="jsTest" class="error">✗ JavaScript未执行</p>
+        <p id="jsSuccess" style="display:none;" class="success">✓ JavaScript执行成功</p>
+    </div>
+    
+    <div class="test-box">
+        <h3>测试3: DOM操作</h3>
+        <p id="domTest">等待JavaScript...</p>
+    </div>
+    
+    <div class="test-box">
+        <h3>测试4: Fetch API</h3>
+        <p id="fetchTest">等待测试...</p>
+    </div>
+    
+    <div class="test-box">
+        <h3>测试5: Console输出</h3>
+        <p>打开浏览器Console（F12），应该看到测试日志</p>
+    </div>
+
+    <script>
+        console.log('='.repeat(60));
+        console.log('JavaScript测试开始');
+        console.log('='.repeat(60));
+        
+        // 测试2: JavaScript执行
+        document.getElementById('jsTest').style.display = 'none';
+        document.getElementById('jsSuccess').style.display = 'block';
+        console.log('✓ 测试2通过: JavaScript可以执行');
+        
+        // 测试3: DOM操作
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('✓ 测试3通过: DOMContentLoaded事件触发');
+            document.getElementById('domTest').innerHTML = '<span class="success">✓ DOM操作正常</span>';
+            document.getElementById('domTest').className = 'success';
+            
+            // 测试4: Fetch API
+            console.log('开始测试Fetch API...');
+            fetch('/api/photos')
+                .then(function(response) {
+                    console.log('Fetch响应状态:', response.status);
+                    return response.json();
+                })
+                .then(function(data) {
+                    console.log('✓ 测试4通过: Fetch API正常');
+                    console.log('API返回数据:', data);
+                    var fetchTest = document.getElementById('fetchTest');
+                    fetchTest.innerHTML = '<span class="success">✓ Fetch API正常</span><br>' +
+                        'success: ' + data.success + '<br>' +
+                        '照片数量: ' + (data.photos ? data.photos.length : 0);
+                    fetchTest.className = 'success';
+                })
+                .catch(function(error) {
+                    console.error('✗ 测试4失败:', error);
+                    document.getElementById('fetchTest').innerHTML = 
+                        '<span class="error">✗ Fetch失败: ' + error.message + '</span>';
+                });
+        });
+        
+        console.log('='.repeat(60));
+        console.log('JavaScript测试脚本加载完成');
+        console.log('='.repeat(60));
+    </script>
+</body>
+</html>

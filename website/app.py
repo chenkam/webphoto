@@ -147,6 +147,19 @@ def debug_page():
         return str(e), 500
 
 
+@app.route('/test')
+def test_page():
+    """JavaScript测试页面"""
+    app.logger.info('访问测试页面')
+    try:
+        result = render_template('simple_test.html')
+        app.logger.info('测试页面渲染成功')
+        return result
+    except Exception as e:
+        app.logger.error('渲染测试页面失败: %s', str(e), exc_info=True)
+        return str(e), 500
+
+
 @app.route('/api/photos', methods=['GET'])
 def get_photos():
     """获取所有照片列表"""

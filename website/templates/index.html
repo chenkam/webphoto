@@ -21,7 +21,7 @@
                         <span>3D 画廊</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="uploadNavItem">
                     <a href="#" class="nav-link" data-page="upload">
                         <span class="nav-icon">📤</span>
                         <span>上传照片</span>
@@ -30,6 +30,24 @@
                 <li class="nav-item photo-count-nav">
                     <span class="count-badge" id="navPhotoCount">0</span>
                     <span class="count-label">张照片</span>
+                </li>
+                <li class="nav-item" id="loginNavItem">
+                    <a href="#" class="nav-link" data-page="login">
+                        <span class="nav-icon">🔐</span>
+                        <span>登录</span>
+                    </a>
+                </li>
+                <li class="nav-item" id="userNavItem" style="display: none;">
+                    <span class="nav-link">
+                        <span class="nav-icon">👤</span>
+                        <span id="usernameDisplay"></span>
+                    </span>
+                </li>
+                <li class="nav-item" id="logoutNavItem" style="display: none;">
+                    <a href="#" class="nav-link" id="logoutBtn">
+                        <span class="nav-icon">🚪</span>
+                        <span>登出</span>
+                    </a>
                 </li>
             </ul>
             <button class="nav-toggle" id="navToggle">
@@ -82,7 +100,7 @@
                     <button class="control-btn" id="playPauseBtn" title="自动播放">
                         <span>▶</span>
                     </button>
-                    <button class="control-btn" id="deletePhotoBtn" title="删除照片">
+                    <button class="control-btn" id="deletePhotoBtn" title="删除照片" style="display: none;">
                         <span>🗑️</span>
                     </button>
                 </div>
@@ -98,7 +116,18 @@
                 <p>分享您的精彩瞬间</p>
             </div>
 
-            <div class="upload-card">
+            <!-- 未登录提示 -->
+            <div id="uploadLoginRequired" class="empty-message" style="display: none;">
+                <div class="empty-icon">🔐</div>
+                <h3>需要登录</h3>
+                <p>请先登录才能上传照片</p>
+                <button class="btn btn-primary" onclick="switchPage('login')">
+                    <span class="nav-icon">🔐</span>
+                    立即登录
+                </button>
+            </div>
+
+            <div class="upload-card" id="uploadFormContainer">
                 <form id="uploadForm" enctype="multipart/form-data">
                     <div class="file-drop-area" id="fileDropArea">
                         <input type="file" id="photoInput" name="photo" accept="image/*" required>
@@ -116,15 +145,6 @@
                             <button type="button" class="remove-preview" id="removePreview">&times;</button>
                         </div>
                     </div>
-                    <!---
-                    <div class="form-group">
-                        <label for="description">
-                            <span class="label-icon">💬</span>
-                            照片描述（可选）
-                        </label>
-                        <textarea id="description" name="description" rows="4" placeholder="为这张照片添加一段描述，记录美好瞬间..."></textarea>
-                    </div>
-                    -->
                     
                     <button type="submit" class="btn btn-primary btn-large" id="uploadBtn">
                         <span class="btn-text">
@@ -140,8 +160,46 @@
         </div>
     </section>
 
+    <!-- 登录页面 -->
+    <section id="loginPage" class="page">
+        <div class="upload-container">
+            <div class="upload-hero">
+                <h1>账号登录</h1>
+                <p>登录后可上传和管理照片</p>
+            </div>
+
+            <div class="upload-card" style="max-width: 400px; margin: 0 auto;">
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">
+                            <span class="label-icon">👤</span>
+                            用户名
+                        </label>
+                        <input type="text" id="username" name="username" required placeholder="请输入用户名">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">
+                            <span class="label-icon">🔑</span>
+                            密码
+                        </label>
+                        <input type="password" id="password" name="password" required placeholder="请输入密码">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-large" id="loginSubmitBtn">
+                        <span class="btn-text">
+                            <span class="btn-icon">🔐</span>
+                            登录
+                        </span>
+                        <span class="loader" style="display: none;"></span>
+                    </button>
+                </form>
+                
+                <div id="loginMessage" class="message"></div>
+            </div>
+        </div>
+    </section>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
-

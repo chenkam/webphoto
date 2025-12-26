@@ -3,6 +3,8 @@ var currentPhotos = [];
 var currentPhotoIndex = 0;
 var autoPlayInterval = null;
 var isAutoPlaying = false;
+var isLoggedIn = false;
+var currentUser = '';
 
 // ==================== 页面加载完成后初始化 ====================
 document.addEventListener('DOMContentLoaded', function() {
@@ -11,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function init() {
+    // 检查登录状态
+    checkAuthStatus();
+    
     // 绑定导航
     setupNavigation();
     
@@ -20,11 +25,18 @@ function init() {
     // 绑定控制按钮
     setupControls();
     
+    // 绑定登录
+    setupLogin();
+    
     // 绑定空状态上传按钮
     var emptyUploadBtn = document.getElementById('emptyUploadBtn');
     if (emptyUploadBtn) {
         emptyUploadBtn.addEventListener('click', function() {
-            switchPage('upload');
+            if (isLoggedIn) {
+                switchPage('upload');
+            } else {
+                switchPage('login');
+            }
         });
     }
     
@@ -69,14 +81,22 @@ function switchPage(pageName) {
     // 切换页面
     var galleryPage = document.getElementById('galleryPage');
     var uploadPage = document.getElementById('uploadPage');
+    var loginPage = document.getElementById('loginPage');
     
     if (pageName === 'gallery') {
         galleryPage.classList.add('active');
-        uploadPage.classList.remove('active');
+        if (uploadPage) uploadPage.classList.remove('active');
+        if (loginPage) loginPage.classList.remove('active');
         loadPhotos();
     } else if (pageName === 'upload') {
         galleryPage.classList.remove('active');
-        uploadPage.classList.add('active');
+        if (uploadPage) uploadPage.classList.add('active');
+        if (loginPage) loginPage.classList.remove('active');
+        updateUploadPageAuth();
+    } else if (pageName === 'login') {
+        galleryPage.classList.remove('active');
+        if (uploadPage) uploadPage.classList.remove('active');
+        if (loginPage) loginPage.classList.add('active');
     }
 }
 
@@ -473,3 +493,181 @@ function deleteCurrentPhoto() {
         deleteBtn.disabled = false;
     });
 }
+
+// ==================== 登录功能 ====================
+function checkAuthStatus() {
+    fetch('/api/check_auth')
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(result) {
+            if (result.success && result.logged_in) {
+                isLoggedIn = true;
+                currentUser = result.username;
+                updateUIForLoggedIn();
+            } else {
+                isLoggedIn = false;
+                currentUser = '';
+                updateUIForLoggedOut();
+            }
+        })
+        .catch(function(error) {
+            console.error('检查登录状态失败:', error);
+            isLoggedIn = false;
+            updateUIForLoggedOut();
+        });
+}
+
+function updateUIForLoggedIn() {
+    console.log('用户已登录:', currentUser);
+    
+    // 显示用户名和登出按钮
+    var loginNavItem = document.getElementById('loginNavItem');
+    var userNavItem = document.getElementById('userNavItem');
+    var logoutNavItem = document.getElementById('logoutNavItem');
+    var usernameDisplay = document.getElementById('usernameDisplay');
+    
+    if (loginNavItem) loginNavItem.style.display = 'none';
+    if (userNavItem) userNavItem.style.display = 'block';
+    if (logoutNavItem) logoutNavItem.style.display = 'block';
+    if (usernameDisplay) usernameDisplay.textContent = currentUser;
+    
+    // 显示删除按钮
+    var deleteBtn = document.getElementById('deletePhotoBtn');
+    if (deleteBtn) deleteBtn.style.display = 'block';
+}
+
+function updateUIForLoggedOut() {
+    console.log('用户未登录');
+    
+    // 显示登录按钮，隐藏用户信息
+    var loginNavItem = document.getElementById('loginNavItem');
+    var userNavItem = document.getElementById('userNavItem');
+    var logoutNavItem = document.getElementById('logoutNavItem');
+    
+    if (loginNavItem) loginNavItem.style.display = 'block';
+    if (userNavItem) userNavItem.style.display = 'none';
+    if (logoutNavItem) logoutNavItem.style.display = 'none';
+    
+    // 隐藏删除按钮
+    var deleteBtn = document.getElementById('deletePhotoBtn');
+    if (deleteBtn) deleteBtn.style.display = 'none';
+}
+
+function updateUploadPageAuth() {
+    var uploadLoginRequired = document.getElementById('uploadLoginRequired');
+    var uploadFormContainer = document.getElementById('uploadFormContainer');
+    
+    if (isLoggedIn) {
+        if (uploadLoginRequired) uploadLoginRequired.style.display = 'none';
+        if (uploadFormContainer) uploadFormContainer.style.display = 'block';
+    } else {
+        if (uploadLoginRequired) uploadLoginRequired.style.display = 'block';
+        if (uploadFormContainer) uploadFormContainer.style.display = 'none';
+    }
+}
+
+function setupLogin() {
+    var loginForm = document.getElementById('loginForm');
+    if (!loginForm) return;
+    
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        handleLogin();
+    });
+    
+    var logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleLogout();
+        });
+    }
+}
+
+function handleLogin() {
+    var usernameInput = document.getElementById('username');
+    var passwordInput = document.getElementById('password');
+    var loginMessage = document.getElementById('loginMessage');
+    var loginSubmitBtn = document.getElementById('loginSubmitBtn');
+    
+    var username = usernameInput.value.trim();
+    var password = passwordInput.value;
+    
+    if (!username || !password) {
+        showMessage(loginMessage, 'error', '请输入用户名和密码');
+        return;
+    }
+    
+    loginSubmitBtn.disabled = true;
+    var btnText = loginSubmitBtn.querySelector('.btn-text');
+    var loader = loginSubmitBtn.querySelector('.loader');
+    if (btnText) btnText.style.display = 'none';
+    if (loader) loader.style.display = 'inline-block';
+    
+    fetch('/api/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            username: username,
+            password: password
+        })
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(result) {
+        if (result.success) {
+            showMessage(loginMessage, 'success', '登录成功！');
+            isLoggedIn = true;
+            currentUser = username;
+            updateUIForLoggedIn();
+            
+            // 清空表单
+            document.getElementById('loginForm').reset();
+            
+            // 延迟跳转到画廊
+            setTimeout(function() {
+                switchPage('gallery');
+            }, 1000);
+        } else {
+            showMessage(loginMessage, 'error', result.error || '登录失败');
+        }
+    })
+    .catch(function(error) {
+        showMessage(loginMessage, 'error', '登录失败: ' + error.message);
+    })
+    .finally(function() {
+        loginSubmitBtn.disabled = false;
+        if (btnText) btnText.style.display = 'flex';
+        if (loader) loader.style.display = 'none';
+    });
+}
+
+function handleLogout() {
+    if (!confirm('确定要登出吗？')) {
+        return;
+    }
+    
+    fetch('/api/logout', {
+        method: 'POST'
+    })
+    .then(function(response) {
+        return response.json();
+    })
+    .then(function(result) {
+        if (result.success) {
+            isLoggedIn = false;
+            currentUser = '';
+            updateUIForLoggedOut();
+            switchPage('gallery');
+            console.log('登出成功');
+        }
+    })
+    .catch(function(error) {
+        console.error('登出失败:', error);
+    });
+}
+

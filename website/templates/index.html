@@ -40,21 +40,11 @@
         </div>
     </nav>
 
-    <!-- 3D 画廊页面 -->
+    <!-- 全屏画廊页面 -->
     <section id="galleryPage" class="page active">
-        <div class="gallery-hero">
-            <h1 class="gallery-title">希希之家-3D</h1>
-            <p class="gallery-subtitle">探索您的美好回忆</p>
-        </div>
-
         <div id="loadingSpinner" class="loading-spinner">
             <div class="spinner"></div>
             <p>加载中...</p>
-        </div>
-
-        <!-- 3D 画廊容器 -->
-        <div id="gallery3D" class="gallery-3d-container">
-            <!-- 照片卡片将动态插入这里 -->
         </div>
 
         <!-- 空状态 -->
@@ -68,17 +58,35 @@
             </button>
         </div>
 
-        <!-- 视图切换按钮 -->
-        <div class="view-controls" id="viewControls" style="display: none;">
-            <button class="view-btn active" data-view="3d" title="3D 视图">
-                <span>🎲</span>
+        <!-- 全屏图片展示 -->
+        <div id="fullscreenGallery" class="fullscreen-gallery" style="display: none;">
+            <!-- 主图片显示 -->
+            <div class="fullscreen-image-container">
+                <img id="fullscreenImage" src="" alt="" class="fullscreen-image">
+            </div>
+
+            <!-- 左右导航箭头 -->
+            <button class="nav-arrow nav-arrow-left" id="prevPhotoBtn" title="上一张 (←)">
+                <span>‹</span>
             </button>
-            <button class="view-btn" data-view="grid" title="网格视图">
-                <span>⊞</span>
+            <button class="nav-arrow nav-arrow-right" id="nextPhotoBtn" title="下一张 (→)">
+                <span>›</span>
             </button>
-            <button class="view-btn" data-view="carousel" title="轮播视图">
-                <span>⟲</span>
-            </button>
+
+            <!-- 底部信息栏 -->
+            <div class="fullscreen-info">
+                <div class="photo-counter">
+                    <span id="currentPhotoNum">1</span> / <span id="totalPhotoNum">1</span>
+                </div>
+                <div class="fullscreen-controls">
+                    <button class="control-btn" id="playPauseBtn" title="自动播放">
+                        <span>▶</span>
+                    </button>
+                    <button class="control-btn" id="deletePhotoBtn" title="删除照片">
+                        <span>🗑️</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -132,35 +140,6 @@
         </div>
     </section>
 
-    <!-- 照片详情模态框 -->
-    <div id="photoModal" class="modal">
-        <div class="modal-backdrop" id="modalBackdrop"></div>
-        <div class="modal-content-new">
-            <button class="modal-close" id="modalClose">
-                <span>&times;</span>
-            </button>
-            <div class="modal-image-container">
-                <img id="modalImage" src="" alt="">
-                <div class="modal-nav">
-                    <button class="modal-nav-btn" id="prevPhoto" title="上一张">‹</button>
-                    <button class="modal-nav-btn" id="nextPhoto" title="下一张">›</button>
-                </div>
-            </div>
-            <div class="modal-info-new">
-                <h2 id="modalOriginalName"></h2>
-                <p id="modalDescription" class="modal-description"></p>
-                <div class="modal-meta">
-                    <span class="modal-time" id="modalTime"></span>
-                </div>
-                <div class="modal-actions">
-                    <button class="btn btn-danger" id="deleteBtn">
-                        <span>🗑️</span>
-                        删除照片
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>

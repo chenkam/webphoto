@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>电子相册 - Photo Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📷 我的电子相册</h1>
+            <p class="subtitle">上传并浏览您的美好回忆</p>
+        </header>
+
+        <!-- 上传区域 -->
+        <section class="upload-section">
+            <div class="upload-card">
+                <h2>上传照片</h2>
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="file-input-wrapper">
+                        <input type="file" id="photoInput" name="photo" accept="image/*" required>
+                        <label for="photoInput" class="file-label">
+                            <span class="upload-icon">📁</span>
+                            <span class="upload-text">选择照片</span>
+                        </label>
+                        <div id="fileName" class="file-name"></div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">照片描述（可选）</label>
+                        <textarea id="description" name="description" rows="3" placeholder="为这张照片添加一段描述..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" id="uploadBtn">
+                        <span class="btn-text">上传照片</span>
+                        <span class="loader" style="display: none;"></span>
+                    </button>
+                </form>
+                <div id="uploadMessage" class="message"></div>
+            </div>
+        </section>
+
+        <!-- 相册浏览区域 -->
+        <section class="gallery-section">
+            <div class="gallery-header">
+                <h2>相册浏览</h2>
+                <div class="photo-count">共 <span id="photoCount">0</span> 张照片</div>
+            </div>
+            
+            <div id="loadingSpinner" class="loading-spinner">
+                <div class="spinner"></div>
+                <p>加载中...</p>
+            </div>
+            
+            <div id="gallery" class="gallery-grid"></div>
+            
+            <div id="emptyMessage" class="empty-message" style="display: none;">
+                <div class="empty-icon">📸</div>
+                <p>还没有照片，上传第一张吧！</p>
+            </div>
+        </section>
+    </div>
+
+    <!-- 照片查看模态框 -->
+    <div id="photoModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="modalImage" src="" alt="">
+            <div class="modal-info">
+                <h3 id="modalOriginalName"></h3>
+                <p id="modalDescription"></p>
+                <p class="modal-time" id="modalTime"></p>
+                <button class="btn btn-danger" id="deleteBtn">删除照片</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+

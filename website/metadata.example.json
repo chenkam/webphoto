@@ -1,0 +1,27 @@
+[
+  {
+    "id": "abc123def456",
+    "filename": "abc123def456.jpg",
+    "original_name": "sunset.jpg",
+    "description": "美丽的日落景色",
+    "upload_time": "2025-12-26 14:30:00",
+    "url": "/uploads/abc123def456.jpg"
+  },
+  {
+    "id": "def789ghi012",
+    "filename": "def789ghi012.png",
+    "original_name": "family_photo.png",
+    "description": "家庭聚会合影",
+    "upload_time": "2025-12-25 18:45:30",
+    "url": "/uploads/def789ghi012.png"
+  },
+  {
+    "id": "ghi345jkl678",
+    "filename": "ghi345jkl678.jpg",
+    "original_name": "vacation.jpg",
+    "description": "",
+    "upload_time": "2025-12-24 10:15:20",
+    "url": "/uploads/ghi345jkl678.jpg"
+  }
+]
+

@@ -89,6 +89,12 @@ function setupUpload() {
     var previewImage = document.getElementById('previewImage');
     var removePreview = document.getElementById('removePreview');
     
+    // 检查所有必需元素是否存在
+    if (!uploadForm || !photoInput || !fileDropArea || !filePreview || !previewImage || !removePreview) {
+        console.warn('上传页面元素未完全加载');
+        return;
+    }
+    
     // 文件选择
     photoInput.addEventListener('change', function() {
         var file = this.files[0];
@@ -97,7 +103,8 @@ function setupUpload() {
             reader.onload = function(e) {
                 previewImage.src = e.target.result;
                 filePreview.style.display = 'block';
-                fileDropArea.querySelector('.file-drop-content').style.display = 'none';
+                var dropContent = fileDropArea.querySelector('.file-drop-content');
+                if (dropContent) dropContent.style.display = 'none';
             };
             reader.readAsDataURL(file);
         }
@@ -108,7 +115,8 @@ function setupUpload() {
         e.stopPropagation();
         photoInput.value = '';
         filePreview.style.display = 'none';
-        fileDropArea.querySelector('.file-drop-content').style.display = 'block';
+        var dropContent = fileDropArea.querySelector('.file-drop-content');
+        if (dropContent) dropContent.style.display = 'block';
     });
     
     // 拖拽上传

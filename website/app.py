@@ -126,9 +126,11 @@ def index():
     """主页"""
     app.logger.info('访问主页')
     try:
-        return render_template('index.html')
+        result = render_template('index.html')
+        app.logger.info('主页渲染成功')
+        return result
     except Exception as e:
-        app.logger.error('渲染主页失败: %s', str(e))
+        app.logger.error('渲染主页失败: %s', str(e), exc_info=True)
         return str(e), 500
 
 
@@ -137,9 +139,11 @@ def debug_page():
     """调试页面"""
     app.logger.info('访问调试页面')
     try:
-        return render_template('debug.html')
+        result = render_template('debug.html')
+        app.logger.info('调试页面渲染成功')
+        return result
     except Exception as e:
-        app.logger.error('渲染调试页面失败: %s', str(e))
+        app.logger.error('渲染调试页面失败: %s', str(e), exc_info=True)
         return str(e), 500
 
 
@@ -254,13 +258,15 @@ def delete_photo(photo_id):
 def uploaded_file(filename):
     """提供上传的文件"""
     try:
+        app.logger.info('请求文件: %s', filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         if not os.path.exists(filepath):
             app.logger.warning('文件不存在: %s', filename)
             return 'File not found', 404
+        app.logger.info('返回文件: %s', filepath)
         return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
     except Exception as e:
-        app.logger.error('访问文件失败 %s: %s', filename, str(e))
+        app.logger.error('访问文件失败 %s: %s', filename, str(e), exc_info=True)
         return str(e), 500
 
 

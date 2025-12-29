@@ -115,8 +115,7 @@ var ThemeController = {
         // 创建梅花飘落
         this.createPlumBlossoms();
         
-        // 创建祥云
-        this.createLuckyClouds();
+        // 祥云已移除
         
         // 创建福字
         this.createFuCharacters();
@@ -141,6 +140,11 @@ var ThemeController = {
         for (var i = 0; i < 7; i++) {
             var lantern = document.createElement('div');
             lantern.className = 'lantern';
+            
+            // 添加灯笼主体
+            var body = document.createElement('div');
+            body.className = 'lantern-body';
+            lantern.appendChild(body);
             
             // 添加流苏
             var tassel = document.createElement('div');
@@ -199,27 +203,7 @@ var ThemeController = {
         document.body.appendChild(container);
     },
     
-    createLuckyClouds: function() {
-        var container = document.createElement('div');
-        container.className = 'cloud-container';
-        
-        var cloudPositions = [
-            { top: '15%', delay: 0 },
-            { top: '35%', delay: 6 },
-            { top: '55%', delay: 12 },
-            { top: '25%', delay: 18 }
-        ];
-        
-        cloudPositions.forEach(function(pos) {
-            var cloud = document.createElement('div');
-            cloud.className = 'lucky-cloud';
-            cloud.style.top = pos.top;
-            cloud.style.animationDelay = pos.delay + 's';
-            container.appendChild(cloud);
-        });
-        
-        document.body.appendChild(container);
-    },
+    // 祥云功能已移除
     
     createFuCharacters: function() {
         for (var i = 0; i < 2; i++) {
@@ -288,12 +272,10 @@ var ThemeController = {
     showNewyearGreeting: function() {
         var greetings = [
             '新年快乐！',
-            '恭喜发财！',
             '万事如意！',
             '龙年大吉！',
             '福星高照！',
             '吉祥如意！',
-            '财源广进！',
             '阖家欢乐！',
             '年年有余！',
             '步步高升！'

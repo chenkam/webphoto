@@ -166,6 +166,12 @@ body {
     justify-content: center;
 }
 
+/* 新年主题下的画廊背景 */
+body.theme-newyear .fullscreen-gallery {
+    background: rgba(220, 20, 60, 0.15);
+    backdrop-filter: blur(5px);
+}
+
 .fullscreen-image-container {
     width: 100%;
     height: 100%;

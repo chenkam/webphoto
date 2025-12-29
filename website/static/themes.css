@@ -63,7 +63,7 @@ body.theme-newyear .count-badge {
     color: #8B0000;
 }
 
-/* 新年灯笼装饰 - 精美金色灯笼 */
+/* 新年灯笼装饰 - 立体圆形条纹灯笼 */
 .lantern-container {
     position: fixed;
     top: 0;
@@ -77,85 +77,120 @@ body.theme-newyear .count-badge {
 
 .lantern {
     position: absolute;
-    width: 60px;
-    height: 80px;
+    width: 70px;
+    height: 100px;
     animation: swingLantern 4s ease-in-out infinite;
-    filter: drop-shadow(0 8px 20px rgba(255, 215, 0, 0.5));
+    filter: drop-shadow(0 10px 25px rgba(255, 69, 0, 0.6));
+    transform-origin: top center;
 }
 
-/* 灯笼主体 */
+/* 灯笼顶部挂环 */
 .lantern::before {
     content: '';
     position: absolute;
-    top: 15px;
+    top: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 50px;
-    height: 60px;
-    background: 
-        radial-gradient(ellipse at center, #FFD700 0%, #FFA500 40%, #FF8C00 100%);
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    box-shadow: 
-        inset 0 -5px 15px rgba(139, 0, 0, 0.3),
-        inset 0 5px 15px rgba(255, 255, 255, 0.3),
-        0 0 20px rgba(255, 215, 0, 0.6);
+    width: 20px;
+    height: 8px;
+    background: linear-gradient(180deg, #8B0000 0%, #B22222 100%);
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
 }
 
-/* 灯笼顶部 */
-.lantern::after {
-    content: '';
+/* 灯笼主体 - 圆形带竖条纹 */
+.lantern-body {
     position: absolute;
     top: 8px;
     left: 50%;
     transform: translateX(-50%);
-    width: 30px;
-    height: 12px;
-    background: linear-gradient(180deg, #B8860B 0%, #DAA520 100%);
+    width: 65px;
+    height: 65px;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            #FF4500 0px,
+            #FF6347 3px,
+            #FF4500 6px,
+            #DC143C 9px,
+            #FF4500 12px
+        ),
+        radial-gradient(ellipse at center, #FF6347 0%, #FF4500 50%, #DC143C 100%);
     border-radius: 50%;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    box-shadow: 
+        inset -8px -8px 20px rgba(139, 0, 0, 0.6),
+        inset 8px 8px 20px rgba(255, 160, 122, 0.4),
+        0 0 30px rgba(255, 69, 0, 0.5);
 }
 
-/* 灯笼底部流苏 */
+/* 灯笼福字装饰 */
+.lantern-body::before {
+    content: '福';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 24px;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 
+        0 0 10px rgba(255, 215, 0, 0.8),
+        2px 2px 4px rgba(139, 0, 0, 0.8);
+}
+
+/* 灯笼底部 */
+.lantern::after {
+    content: '';
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 8px;
+    background: linear-gradient(180deg, #8B0000 0%, #B22222 100%);
+    border-radius: 0 0 20px 20px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* 灯笼流苏 */
 .lantern-tassel {
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    width: 3px;
-    height: 25px;
-    background: linear-gradient(180deg, #FFD700 0%, #FF6347 100%);
-    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.5);
+    width: 4px;
+    height: 30px;
+    background: linear-gradient(180deg, #FFD700 0%, #FFA500 50%, #FF6347 100%);
+    box-shadow: 0 3px 10px rgba(255, 215, 0, 0.5);
 }
 
 .lantern-tassel::after {
-    content: '💎';
+    content: '';
     position: absolute;
-    bottom: -15px;
+    bottom: -8px;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 12px;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle, #FFD700 0%, #FFA500 100%);
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.7);
 }
 
-.lantern:nth-child(1) { left: 10%; top: 85px; animation-delay: 0s; }
-.lantern:nth-child(2) { left: 22%; top: 100px; animation-delay: 0.5s; }
-.lantern:nth-child(3) { left: 38%; top: 90px; animation-delay: 1s; }
-.lantern:nth-child(4) { left: 50%; top: 80px; animation-delay: 1.5s; }
-.lantern:nth-child(5) { left: 62%; top: 95px; animation-delay: 2s; }
-.lantern:nth-child(6) { left: 78%; top: 105px; animation-delay: 2.5s; }
-.lantern:nth-child(7) { left: 90%; top: 88px; animation-delay: 3s; }
+.lantern:nth-child(1) { left: 8%; top: 80px; animation-delay: 0s; }
+.lantern:nth-child(2) { left: 20%; top: 95px; animation-delay: 0.6s; }
+.lantern:nth-child(3) { left: 35%; top: 85px; animation-delay: 1.2s; }
+.lantern:nth-child(4) { left: 50%; top: 75px; animation-delay: 1.8s; }
+.lantern:nth-child(5) { left: 65%; top: 90px; animation-delay: 2.4s; }
+.lantern:nth-child(6) { left: 80%; top: 100px; animation-delay: 3s; }
+.lantern:nth-child(7) { left: 92%; top: 83px; animation-delay: 3.6s; }
 
 @keyframes swingLantern {
     0%, 100% { 
-        transform: rotate(-10deg) translateY(0);
-    }
-    25% {
-        transform: rotate(-5deg) translateY(-8px);
+        transform: rotate(-12deg);
     }
     50% { 
-        transform: rotate(10deg) translateY(0);
-    }
-    75% {
-        transform: rotate(5deg) translateY(-8px);
+        transform: rotate(12deg);
     }
 }
 
@@ -299,71 +334,7 @@ body.theme-newyear .count-badge {
     }
 }
 
-/* 金色祥云装饰 */
-.cloud-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 6;
-    overflow: hidden;
-}
-
-.lucky-cloud {
-    position: absolute;
-    width: 120px;
-    height: 60px;
-    animation: cloudFloat 25s linear infinite;
-}
-
-/* 祥云形状 - 使用CSS绘制 */
-.lucky-cloud::before {
-    content: '';
-    position: absolute;
-    width: 80px;
-    height: 40px;
-    background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.4) 0%, rgba(255, 215, 0, 0.1) 70%, transparent 100%);
-    border-radius: 50%;
-    left: 20px;
-    top: 10px;
-    filter: blur(3px);
-}
-
-.lucky-cloud::after {
-    content: '';
-    position: absolute;
-    width: 100px;
-    height: 50px;
-    background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.3) 0%, rgba(255, 215, 0, 0.05) 70%, transparent 100%);
-    border-radius: 50%;
-    left: 10px;
-    top: 5px;
-    filter: blur(2px);
-}
-
-.lucky-cloud:nth-child(1) { top: 15%; animation-delay: 0s; }
-.lucky-cloud:nth-child(2) { top: 35%; animation-delay: 6s; }
-.lucky-cloud:nth-child(3) { top: 55%; animation-delay: 12s; }
-.lucky-cloud:nth-child(4) { top: 25%; animation-delay: 18s; }
-
-@keyframes cloudFloat {
-    0% {
-        transform: translateX(-150px);
-        opacity: 0;
-    }
-    10% {
-        opacity: 0.5;
-    }
-    90% {
-        opacity: 0.5;
-    }
-    100% {
-        transform: translateX(calc(100vw + 150px));
-        opacity: 0;
-    }
-}
+/* 祥云已移除 */
 
 /* 福字装饰 - 金光闪闪 */
 .fu-character {

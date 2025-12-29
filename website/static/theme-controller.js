@@ -66,14 +66,31 @@ var ThemeController = {
     },
     
     removeEffects: function() {
+        // 清除定时器
+        if (this.fireworkInterval) {
+            clearInterval(this.fireworkInterval);
+            this.fireworkInterval = null;
+        }
+        if (this.greetingInterval) {
+            clearInterval(this.greetingInterval);
+            this.greetingInterval = null;
+        }
+        
         // 移除所有动态效果容器
         var containers = [
             '.lantern-container',
+            '.chinese-knot',
+            '.redenvelope-container',
+            '.plum-blossom-container',
+            '.cloud-container',
+            '.fu-character',
+            '.gold-ingot',
             '.balloon-container',
             '.confetti-container',
             '.star-container',
             '.birthday-cake',
-            '.newyear-greeting'
+            '.newyear-greeting',
+            '.firework'
         ];
         
         containers.forEach(function(selector) {
@@ -86,21 +103,42 @@ var ThemeController = {
     
     // ==================== 新年主题效果 ====================
     createNewyearEffects: function() {
-        // 创建灯笼
+        // 创建灯笼（更多）
         this.createLanterns();
+        
+        // 创建中国结
+        this.createChineseKnots();
+        
+        // 创建红包雨
+        this.createRedEnvelopes();
+        
+        // 创建梅花飘落
+        this.createPlumBlossoms();
+        
+        // 创建祥云
+        this.createLuckyClouds();
+        
+        // 创建福字
+        this.createFuCharacters();
+        
+        // 创建金元宝
+        this.createGoldIngots();
         
         // 创建烟花（每隔几秒）
         this.startFireworks();
         
         // 显示新年祝福
         this.showNewyearGreeting();
+        
+        // 定期显示祝福语
+        this.startGreetingLoop();
     },
     
     createLanterns: function() {
         var container = document.createElement('div');
         container.className = 'lantern-container';
         
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 7; i++) {
             var lantern = document.createElement('div');
             lantern.className = 'lantern';
             lantern.innerHTML = '🏮';
@@ -108,6 +146,93 @@ var ThemeController = {
         }
         
         document.body.appendChild(container);
+    },
+    
+    createChineseKnots: function() {
+        var knots = ['🎀', '🪢'];
+        for (var i = 0; i < 2; i++) {
+            var knot = document.createElement('div');
+            knot.className = 'chinese-knot';
+            knot.innerHTML = knots[i % knots.length];
+            document.body.appendChild(knot);
+        }
+    },
+    
+    createRedEnvelopes: function() {
+        var container = document.createElement('div');
+        container.className = 'redenvelope-container';
+        
+        for (var i = 0; i < 15; i++) {
+            var envelope = document.createElement('div');
+            envelope.className = 'redenvelope';
+            envelope.innerHTML = '🧧';
+            envelope.style.left = (Math.random() * 100) + '%';
+            envelope.style.animationDelay = (Math.random() * 6) + 's';
+            envelope.style.animationDuration = (4 + Math.random() * 3) + 's';
+            container.appendChild(envelope);
+        }
+        
+        document.body.appendChild(container);
+    },
+    
+    createPlumBlossoms: function() {
+        var container = document.createElement('div');
+        container.className = 'plum-blossom-container';
+        
+        var blossoms = ['🌸', '🌺', '🏵️'];
+        
+        for (var i = 0; i < 20; i++) {
+            var blossom = document.createElement('div');
+            blossom.className = 'plum-blossom';
+            blossom.innerHTML = blossoms[Math.floor(Math.random() * blossoms.length)];
+            blossom.style.left = (Math.random() * 100) + '%';
+            blossom.style.animationDelay = (Math.random() * 8) + 's';
+            blossom.style.animationDuration = (6 + Math.random() * 4) + 's';
+            container.appendChild(blossom);
+        }
+        
+        document.body.appendChild(container);
+    },
+    
+    createLuckyClouds: function() {
+        var container = document.createElement('div');
+        container.className = 'cloud-container';
+        
+        var cloudPositions = [
+            { top: '15%', delay: 0 },
+            { top: '35%', delay: 5 },
+            { top: '55%', delay: 10 },
+            { top: '25%', delay: 15 }
+        ];
+        
+        cloudPositions.forEach(function(pos) {
+            var cloud = document.createElement('div');
+            cloud.className = 'lucky-cloud';
+            cloud.innerHTML = '☁️';
+            cloud.style.top = pos.top;
+            cloud.style.animationDelay = pos.delay + 's';
+            container.appendChild(cloud);
+        });
+        
+        document.body.appendChild(container);
+    },
+    
+    createFuCharacters: function() {
+        for (var i = 0; i < 2; i++) {
+            var fu = document.createElement('div');
+            fu.className = 'fu-character';
+            fu.innerHTML = '福';
+            document.body.appendChild(fu);
+        }
+    },
+    
+    createGoldIngots: function() {
+        for (var i = 0; i < 2; i++) {
+            var ingot = document.createElement('div');
+            ingot.className = 'gold-ingot';
+            ingot.innerHTML = '🪙';
+            document.body.appendChild(ingot);
+        }
     },
     
     startFireworks: function() {
@@ -156,7 +281,18 @@ var ThemeController = {
     },
     
     showNewyearGreeting: function() {
-        var greetings = ['新年快乐！', '恭喜发财！', '万事如意！', '龙年大吉！'];
+        var greetings = [
+            '新年快乐！',
+            '恭喜发财！',
+            '万事如意！',
+            '龙年大吉！',
+            '福星高照！',
+            '吉祥如意！',
+            '财源广进！',
+            '阖家欢乐！',
+            '年年有余！',
+            '步步高升！'
+        ];
         var greeting = greetings[Math.floor(Math.random() * greetings.length)];
         
         var div = document.createElement('div');
@@ -164,10 +300,23 @@ var ThemeController = {
         div.textContent = greeting;
         document.body.appendChild(div);
         
-        // 3秒后移除
+        // 4秒后移除
         setTimeout(function() {
             div.remove();
-        }, 3000);
+        }, 4000);
+    },
+    
+    startGreetingLoop: function() {
+        var self = this;
+        
+        // 每15秒显示一次祝福语
+        this.greetingInterval = setInterval(function() {
+            if (self.currentTheme === 'newyear') {
+                self.showNewyearGreeting();
+            } else {
+                clearInterval(self.greetingInterval);
+            }
+        }, 15000);
     },
     
     // ==================== 生日主题效果 ====================

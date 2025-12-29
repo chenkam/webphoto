@@ -2,7 +2,14 @@
 
 /* ==================== 新年主题 ==================== */
 body.theme-newyear {
-    background: linear-gradient(135deg, #8B0000 0%, #DC143C 50%, #FF4500 100%);
+    background: 
+        linear-gradient(135deg, 
+            #C8102E 0%,    /* 中国红 */
+            #DC143C 25%,   /* 鲜红 */
+            #FFD700 50%,   /* 金黄 */
+            #FF4500 75%,   /* 橙红 */
+            #8B0000 100%   /* 深红 */
+        );
     background-attachment: fixed;
 }
 
@@ -14,8 +21,16 @@ body.theme-newyear::before {
     width: 100%;
     height: 100%;
     background-image: 
-        radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 0, 0, 0.3) 0%, transparent 50%);
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 100px,
+            rgba(255, 215, 0, 0.03) 100px,
+            rgba(255, 215, 0, 0.03) 200px
+        ),
+        radial-gradient(circle at 20% 30%, rgba(255, 215, 0, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(255, 0, 0, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(255, 100, 0, 0.1) 0%, transparent 60%);
     pointer-events: none;
     z-index: 0;
 }
@@ -54,19 +69,32 @@ body.theme-newyear .count-badge {
 
 .lantern {
     position: absolute;
-    font-size: 3em;
+    font-size: 3.5em;
+    filter: drop-shadow(0 5px 15px rgba(220, 20, 60, 0.6));
     animation: swingLantern 3s ease-in-out infinite;
 }
 
-.lantern:nth-child(1) { left: 10%; top: 100px; animation-delay: 0s; }
-.lantern:nth-child(2) { left: 30%; top: 120px; animation-delay: 0.5s; }
-.lantern:nth-child(3) { left: 50%; top: 90px; animation-delay: 1s; }
-.lantern:nth-child(4) { left: 70%; top: 110px; animation-delay: 1.5s; }
-.lantern:nth-child(5) { left: 90%; top: 100px; animation-delay: 2s; }
+.lantern:nth-child(1) { left: 8%; top: 90px; animation-delay: 0s; }
+.lantern:nth-child(2) { left: 20%; top: 110px; animation-delay: 0.3s; }
+.lantern:nth-child(3) { left: 35%; top: 95px; animation-delay: 0.6s; }
+.lantern:nth-child(4) { left: 50%; top: 85px; animation-delay: 0.9s; }
+.lantern:nth-child(5) { left: 65%; top: 100px; animation-delay: 1.2s; }
+.lantern:nth-child(6) { left: 80%; top: 105px; animation-delay: 1.5s; }
+.lantern:nth-child(7) { left: 92%; top: 95px; animation-delay: 1.8s; }
 
 @keyframes swingLantern {
-    0%, 100% { transform: rotate(-5deg); }
-    50% { transform: rotate(5deg); }
+    0%, 100% { 
+        transform: rotate(-8deg) translateY(0);
+    }
+    25% {
+        transform: rotate(-3deg) translateY(-5px);
+    }
+    50% { 
+        transform: rotate(8deg) translateY(0);
+    }
+    75% {
+        transform: rotate(3deg) translateY(-5px);
+    }
 }
 
 /* 新年烟花效果 */
@@ -94,22 +122,253 @@ body.theme-newyear .count-badge {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 3em;
+    font-size: 4em;
     font-weight: bold;
     color: #FFD700;
     text-shadow: 
-        0 0 10px rgba(255, 215, 0, 0.8),
-        0 0 20px rgba(255, 0, 0, 0.6),
-        2px 2px 4px rgba(0, 0, 0, 0.8);
-    z-index: 5;
+        0 0 20px rgba(255, 215, 0, 1),
+        0 0 40px rgba(255, 0, 0, 0.8),
+        3px 3px 6px rgba(139, 0, 0, 0.9),
+        -2px -2px 4px rgba(255, 100, 0, 0.5);
+    z-index: 500;
     pointer-events: none;
     opacity: 0;
-    animation: fadeInOut 3s ease-in-out;
+    animation: greetingAppear 4s ease-in-out;
+    background: linear-gradient(45deg, #FFD700, #FF4500, #FFD700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    background-size: 200% auto;
 }
 
-@keyframes fadeInOut {
-    0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-    50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+@keyframes greetingAppear {
+    0% { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(0.3) rotate(-10deg);
+    }
+    15% { 
+        opacity: 1; 
+        transform: translate(-50%, -50%) scale(1.2) rotate(5deg);
+    }
+    30% { 
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    70% { 
+        opacity: 1; 
+        transform: translate(-50%, -50%) scale(1) rotate(0deg);
+    }
+    85% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1) rotate(-3deg);
+    }
+    100% { 
+        opacity: 0; 
+        transform: translate(-50%, -50%) scale(0.8) rotate(5deg);
+    }
+}
+
+/* 红包雨 */
+.redenvelope-container {
+    position: fixed;
+    top: -100px;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 8;
+    overflow: hidden;
+}
+
+.redenvelope {
+    position: absolute;
+    font-size: 2.5em;
+    top: -100px;
+    animation: envelopeFall 6s linear infinite;
+    filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.4));
+}
+
+@keyframes envelopeFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(50vh) rotate(180deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(110vh) rotate(360deg);
+        opacity: 0.3;
+    }
+}
+
+/* 梅花飘落 */
+.plum-blossom-container {
+    position: fixed;
+    top: -50px;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 7;
+    overflow: hidden;
+}
+
+.plum-blossom {
+    position: absolute;
+    font-size: 1.8em;
+    top: -50px;
+    animation: blossomFall 8s linear infinite;
+    filter: drop-shadow(1px 2px 3px rgba(255, 182, 193, 0.6));
+}
+
+@keyframes blossomFall {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0.9;
+    }
+    50% {
+        transform: translateY(50vh) translateX(30px) rotate(180deg);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(110vh) translateX(-30px) rotate(360deg);
+        opacity: 0.2;
+    }
+}
+
+/* 祥云飘动 */
+.cloud-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 6;
+    overflow: hidden;
+}
+
+.lucky-cloud {
+    position: absolute;
+    font-size: 4em;
+    opacity: 0.4;
+    animation: cloudFloat 20s linear infinite;
+    filter: drop-shadow(2px 2px 8px rgba(255, 215, 0, 0.5));
+}
+
+@keyframes cloudFloat {
+    0% {
+        transform: translateX(-200px) translateY(0);
+        opacity: 0.2;
+    }
+    50% {
+        opacity: 0.5;
+        transform: translateX(50vw) translateY(-20px);
+    }
+    100% {
+        transform: translateX(calc(100vw + 200px)) translateY(0);
+        opacity: 0.2;
+    }
+}
+
+/* 福字装饰 */
+.fu-character {
+    position: fixed;
+    font-size: 5em;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 
+        0 0 20px rgba(255, 215, 0, 0.8),
+        3px 3px 6px rgba(139, 0, 0, 0.8);
+    z-index: 5;
+    pointer-events: none;
+    animation: fuRotate 4s ease-in-out infinite;
+}
+
+.fu-character:nth-child(1) {
+    top: 15%;
+    left: 10%;
+    animation-delay: 0s;
+}
+
+.fu-character:nth-child(2) {
+    top: 20%;
+    right: 12%;
+    animation-delay: 1s;
+}
+
+@keyframes fuRotate {
+    0%, 100% { 
+        transform: rotate(-5deg) scale(0.8);
+        opacity: 0.4;
+    }
+    50% { 
+        transform: rotate(5deg) scale(1);
+        opacity: 0.7;
+    }
+}
+
+/* 金元宝 */
+.gold-ingot {
+    position: fixed;
+    font-size: 3em;
+    animation: ingotBounce 3s ease-in-out infinite;
+    filter: drop-shadow(3px 5px 8px rgba(139, 0, 0, 0.5));
+    z-index: 5;
+    pointer-events: none;
+}
+
+.gold-ingot:nth-child(1) {
+    bottom: 15%;
+    left: 8%;
+    animation-delay: 0s;
+}
+
+.gold-ingot:nth-child(2) {
+    bottom: 18%;
+    right: 10%;
+    animation-delay: 1.5s;
+}
+
+@keyframes ingotBounce {
+    0%, 100% { 
+        transform: translateY(0) rotate(-3deg) scale(0.9);
+    }
+    50% { 
+        transform: translateY(-15px) rotate(3deg) scale(1.1);
+    }
+}
+
+/* 中国结装饰 */
+.chinese-knot {
+    position: fixed;
+    font-size: 2.5em;
+    animation: knotSwing 4s ease-in-out infinite;
+    filter: drop-shadow(2px 4px 6px rgba(220, 20, 60, 0.6));
+    z-index: 11;
+    transform-origin: top center;
+}
+
+.chinese-knot:nth-child(1) {
+    top: 80px;
+    left: 15%;
+    animation-delay: 0s;
+}
+
+.chinese-knot:nth-child(2) {
+    top: 85px;
+    right: 18%;
+    animation-delay: 0.8s;
+}
+
+@keyframes knotSwing {
+    0%, 100% { 
+        transform: rotate(-10deg);
+    }
+    50% { 
+        transform: rotate(10deg);
+    }
 }
 
 /* ==================== 生日主题 ==================== */

@@ -141,7 +141,12 @@ var ThemeController = {
         for (var i = 0; i < 7; i++) {
             var lantern = document.createElement('div');
             lantern.className = 'lantern';
-            lantern.innerHTML = '🏮';
+            
+            // 添加流苏
+            var tassel = document.createElement('div');
+            tassel.className = 'lantern-tassel';
+            lantern.appendChild(tassel);
+            
             container.appendChild(lantern);
         }
         
@@ -149,8 +154,8 @@ var ThemeController = {
     },
     
     createChineseKnots: function() {
-        var knots = ['🎀', '🪢'];
-        for (var i = 0; i < 2; i++) {
+        var knots = ['🎎', '🏵️', '🎐', '🎏'];
+        for (var i = 0; i < 4; i++) {
             var knot = document.createElement('div');
             knot.className = 'chinese-knot';
             knot.innerHTML = knots[i % knots.length];
@@ -200,15 +205,14 @@ var ThemeController = {
         
         var cloudPositions = [
             { top: '15%', delay: 0 },
-            { top: '35%', delay: 5 },
-            { top: '55%', delay: 10 },
-            { top: '25%', delay: 15 }
+            { top: '35%', delay: 6 },
+            { top: '55%', delay: 12 },
+            { top: '25%', delay: 18 }
         ];
         
         cloudPositions.forEach(function(pos) {
             var cloud = document.createElement('div');
             cloud.className = 'lucky-cloud';
-            cloud.innerHTML = '☁️';
             cloud.style.top = pos.top;
             cloud.style.animationDelay = pos.delay + 's';
             container.appendChild(cloud);
@@ -227,10 +231,11 @@ var ThemeController = {
     },
     
     createGoldIngots: function() {
-        for (var i = 0; i < 2; i++) {
+        var goldItems = ['🪙', '💰', '🧧', '💎'];
+        for (var i = 0; i < 4; i++) {
             var ingot = document.createElement('div');
             ingot.className = 'gold-ingot';
-            ingot.innerHTML = '🪙';
+            ingot.innerHTML = goldItems[i % goldItems.length];
             document.body.appendChild(ingot);
         }
     },

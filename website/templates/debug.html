@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>调试页面</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='themes.css') }}">
     <style>
         body {
             font-family: monospace;
@@ -83,7 +84,14 @@
     </div>
     
     <div class="test-section">
-        <h3>5. 快速修复</h3>
+        <h3>5. 主题测试</h3>
+        <button class="theme-btn theme-btn-default" data-theme="default">默认 🎨</button>
+        <button class="theme-btn theme-btn-newyear" data-theme="newyear">新年 🧧</button>
+        <button class="theme-btn theme-btn-birthday" data-theme="birthday">生日 🎂</button>
+    </div>
+    
+    <div class="test-section">
+        <h3>6. 快速修复</h3>
         <button onclick="window.location.href='/'">返回主页</button>
         <button onclick="location.reload()">刷新调试页</button>
         <button onclick="clearCache()">清除缓存刷新</button>
@@ -192,6 +200,7 @@
             location.reload(true);
         }
     </script>
+    <script src="{{ url_for('static', filename='theme-controller.js') }}"></script>
 </body>
 </html>
 

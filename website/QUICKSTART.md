@@ -1,179 +1,175 @@
-# 相册系统快速启动指南
+# 快速开始指南
 
-## ✅ 功能已完成
+## 🚀 三步快速部署
 
-本系统现已支持完整的账号认证功能：
-
-- ✅ **浏览相册**：无需登录即可浏览3D全屏相册
-- ✅ **账号登录**：支持用户登录/登出
-- ✅ **上传照片**：登录后可上传照片（未登录时显示提示）
-- ✅ **删除照片**：登录后可删除照片（未登录时隐藏删除按钮）
-- ✅ **会话管理**：登录状态持久化，刷新页面无需重新登录
-
-## 🚀 快速启动
-
-### 1. 启动应用
+### Linux 生产环境（推荐）
 
 ```bash
-cd h:\website2\webphoto\website
+# 1. 上传项目文件到服务器
+cd /path/to/photo-gallery
+
+# 2. 运行自动部署脚本
+chmod +x deploy.sh
+sudo ./deploy.sh
+
+# 3. 访问应用
+# http://你的服务器IP:5000
+```
+
+完成！应用已经作为系统服务运行。
+
+---
+
+### 开发/测试环境
+
+```bash
+# 1. 安装依赖
+python3 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+# 2. 启动应用
 python app.py
+
+# 3. 访问
+# http://localhost:5000
 ```
 
-### 2. 访问系统
-
-浏览器打开：`http://localhost:5000`
-
-### 3. 使用默认账号登录
-
-- **用户名**：`cecilia`
-- **密码**：`20210427`
-
-## 📖 完整使用说明
-
-详细的使用说明请查看 `USER_GUIDE.md` 文件。
-
-## 🔑 账号配置
-
-账号配置文件：`accounts.json`
-
-默认内容：
-```json
-[
-  {
-    "username": "cecilia",
-    "password": "20210427"
-  }
-]
-```
-
-### 添加新账号
-
-编辑 `accounts.json`，添加新用户：
-
-```json
-[
-  {
-    "username": "cecilia",
-    "password": "20210427"
-  },
-  {
-    "username": "新用户名",
-    "password": "新密码"
-  }
-]
-```
-
-保存后重启应用即可。
-
-## 📁 重要文件说明
-
-| 文件/目录 | 说明 |
-|-----------|------|
-| `app.py` | Flask应用主文件 |
-| `accounts.json` | 账号配置文件 |
-| `metadata.json` | 照片元数据 |
-| `uploads/` | 照片存储目录 |
-| `templates/index.html` | HTML模板 |
-| `static/script.js` | JavaScript文件 |
-| `static/style.css` | CSS样式文件 |
-| `logs/` | 日志目录 |
-
-## 🧪 测试功能
-
-运行测试脚本验证功能：
+或者使用快速启动脚本（Linux/Mac）：
 
 ```bash
-python test_auth.py
+chmod +x start.sh
+./start.sh
 ```
 
-测试内容包括：
-- 账号配置文件检查
-- 必需文件检查
-- 应用导入测试
-- 认证功能测试
+---
 
-## 🎯 使用流程
+## 📋 常用命令
 
-### 未登录用户
-1. 访问首页
-2. 浏览3D相册（可切换、自动播放等）
-3. 点击"上传照片"会提示需要登录
+### 服务管理（生产环境）
 
-### 登录用户
-1. 点击"🔐 登录"
-2. 输入用户名和密码
-3. 登录成功后导航栏显示用户名
-4. 可以上传新照片
-5. 可以删除照片（底部显示🗑️按钮）
-6. 点击"🚪 登出"可退出登录
-
-## 🔒 权限控制
-
-| 功能 | 未登录 | 已登录 |
-|------|:------:|:------:|
-| 浏览相册 | ✅ | ✅ |
-| 切换照片 | ✅ | ✅ |
-| 自动播放 | ✅ | ✅ |
-| 上传照片 | ❌ | ✅ |
-| 删除照片 | ❌ | ✅ |
-
-## 🐛 故障排除
-
-### 问题1: 登录后仍然不能上传
-
-**解决方法**：
-- 按 `Ctrl + Shift + R` 强制刷新浏览器
-- 清除浏览器缓存
-
-### 问题2: 页面无法显示
-
-**解决方法**：
-1. 检查Flask是否成功启动
-2. 查看控制台日志：`logs/app.log`
-3. 确认端口5000未被占用
-
-### 问题3: 账号配置不生效
-
-**解决方法**：
-- 检查 `accounts.json` 格式是否正确（使用JSON验证工具）
-- 重启应用使配置生效
-
-## 📊 技术实现
-
-### 后端 (Flask)
-- `/api/login` - 用户登录
-- `/api/logout` - 用户登出
-- `/api/check_auth` - 检查登录状态
-- `/api/photos` - 获取照片列表
-- `/api/upload` - 上传照片（需登录）
-- `/api/photos/<id>` - 删除照片（需登录）
-
-### 前端 (JavaScript)
-- 会话状态管理
-- 动态UI更新（显示/隐藏登录/登出按钮）
-- 权限控制（上传/删除按钮根据登录状态显示）
-- 异步API调用
-
-## 📝 日志
-
-应用日志位置：
-- `logs/app.log` - 应用日志
-- `logs/error.log` - 错误日志
-
-实时查看日志：
 ```bash
-tail -f logs/app.log
+# 查看状态
+sudo systemctl status photo-gallery
+
+# 重启
+sudo systemctl restart photo-gallery
+
+# 停止
+sudo systemctl stop photo-gallery
+
+# 查看日志
+sudo journalctl -u photo-gallery -f
 ```
 
-## ⚠️ 安全建议
+### 开发模式
 
-1. **修改默认密码**：部署前务必修改 `accounts.json` 中的密码
-2. **使用HTTPS**：生产环境建议配置SSL
-3. **限制访问**：可配置防火墙或nginx限制访问
-4. **定期备份**：备份 `uploads/` 目录和 `metadata.json`
+```bash
+# 激活虚拟环境
+source venv/bin/activate
 
-## 🎉 完成状态
+# 启动应用
+python app.py
 
-✅ 所有功能已实现并测试通过！
+# 运行测试
+python test_app.py
+```
 
-现在可以启动应用并体验完整的账号认证相册系统了！
+---
+
+## ⚙️ 常见配置
+
+### 修改端口
+
+编辑 `config.py`:
+
+```python
+PORT = 8080  # 改为你想要的端口
+```
+
+### 修改最大上传大小
+
+编辑 `config.py`:
+
+```python
+MAX_FILE_SIZE = 32 * 1024 * 1024  # 32MB
+```
+
+### 配置 Nginx（推荐）
+
+```bash
+# 1. 安装 Nginx
+sudo apt install nginx -y
+
+# 2. 复制配置
+sudo cp nginx.conf.example /etc/nginx/sites-available/photo-gallery
+
+# 3. 编辑配置文件
+sudo nano /etc/nginx/sites-available/photo-gallery
+# 修改 server_name 为你的域名或IP
+
+# 4. 启用配置
+sudo ln -s /etc/nginx/sites-available/photo-gallery /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+```
+
+---
+
+## 🔥 快速测试
+
+上传你的第一张照片：
+
+1. 访问 http://localhost:5000
+2. 点击"选择照片"
+3. 添加描述（可选）
+4. 点击"上传照片"
+5. 在下方相册中查看
+
+---
+
+## ❓ 遇到问题？
+
+### 无法访问？
+
+```bash
+# 检查服务是否运行
+sudo systemctl status photo-gallery
+
+# 检查端口是否开放
+sudo netstat -tulpn | grep 5000
+
+# 检查防火墙
+sudo ufw status
+```
+
+### 上传失败？
+
+```bash
+# 检查目录权限
+ls -la uploads/
+
+# 如果权限不对，修复它
+chmod 755 uploads
+```
+
+### 查看详细日志
+
+```bash
+# 实时日志
+sudo journalctl -u photo-gallery -f
+
+# 最近100行
+sudo journalctl -u photo-gallery -n 100
+```
+
+---
+
+## 📚 更多信息
+
+完整文档请查看 [README.md](README.md)
+
+---
+
+**祝你使用愉快！** ✨
+

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import print_function, unicode_literals
-from flask import Flask, render_template, request, jsonify, send_from_directory, session
+from flask import Flask, render_template, request, jsonify, send_from_directory
 import os
 from werkzeug.utils import secure_filename
 import json
@@ -22,7 +22,6 @@ UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif', 'webp'])
 MAX_FILE_SIZE = 16 * 1024 * 1024  # 16MB
 METADATA_FILE = 'metadata.json'
-ACCOUNTS_FILE = 'accounts.json'
 LOG_FOLDER = 'logs'
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -122,45 +121,14 @@ def save_metadata(metadata):
         app.logger.error('保存元数据失败: %s', str(e))
 
 
-def load_accounts():
-    """加载账号配置"""
-    if os.path.exists(ACCOUNTS_FILE):
-        try:
-            with open(ACCOUNTS_FILE, 'r') as f:
-                content = f.read()
-                if sys.version_info[0] < 3 and isinstance(content, str):
-                    content = content.decode('utf-8')
-                return json.loads(content) if content else []
-        except Exception as e:
-            app.logger.error('加载账号配置失败: %s', str(e))
-            return []
-    return []
-
-
-def check_auth(username, password):
-    """验证账号密码"""
-    accounts = load_accounts()
-    for account in accounts:
-        if account.get('username') == username and account.get('password') == password:
-            return True
-    return False
-
-
-def is_logged_in():
-    """检查是否已登录"""
-    return session.get('logged_in', False)
-
-
 @app.route('/')
 def index():
     """主页"""
     app.logger.info('访问主页')
     try:
-        result = render_template('index.html')
-        app.logger.info('主页渲染成功')
-        return result
+        return render_template('index.html')
     except Exception as e:
-        app.logger.error('渲染主页失败: %s', str(e), exc_info=True)
+        app.logger.error('渲染主页失败: %s', str(e))
         return str(e), 500
 
 
@@ -169,78 +137,10 @@ def debug_page():
     """调试页面"""
     app.logger.info('访问调试页面')
     try:
-        result = render_template('debug.html')
-        app.logger.info('调试页面渲染成功')
-        return result
+        return render_template('debug.html')
     except Exception as e:
-        app.logger.error('渲染调试页面失败: %s', str(e), exc_info=True)
+        app.logger.error('渲染调试页面失败: %s', str(e))
         return str(e), 500
-
-
-@app.route('/test')
-def test_page():
-    """JavaScript测试页面"""
-    app.logger.info('访问测试页面')
-    try:
-        result = render_template('simple_test.html')
-        app.logger.info('测试页面渲染成功')
-        return result
-    except Exception as e:
-        app.logger.error('渲染测试页面失败: %s', str(e), exc_info=True)
-        return str(e), 500
-
-
-@app.route('/api/login', methods=['POST'])
-def login():
-    """用户登录"""
-    try:
-        data = request.get_json() or {}
-        username = data.get('username', '')
-        password = data.get('password', '')
-        
-        if sys.version_info[0] < 3:
-            if isinstance(username, str):
-                username = username.decode('utf-8')
-            if isinstance(password, str):
-                password = password.decode('utf-8')
-        
-        app.logger.info('登录请求: %s', username)
-        
-        if check_auth(username, password):
-            session['logged_in'] = True
-            session['username'] = username
-            app.logger.info('登录成功: %s', username)
-            return jsonify({'success': True, 'message': u'登录成功'})
-        else:
-            app.logger.warning('登录失败: 用户名或密码错误 - %s', username)
-            return jsonify({'success': False, 'error': u'用户名或密码错误'}), 401
-    
-    except Exception as e:
-        app.logger.error('登录失败: %s', str(e), exc_info=True)
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/logout', methods=['POST'])
-def logout():
-    """用户登出"""
-    try:
-        username = session.get('username', 'unknown')
-        session.clear()
-        app.logger.info('登出成功: %s', username)
-        return jsonify({'success': True, 'message': u'已登出'})
-    except Exception as e:
-        app.logger.error('登出失败: %s', str(e), exc_info=True)
-        return jsonify({'success': False, 'error': str(e)}), 500
-
-
-@app.route('/api/check_auth', methods=['GET'])
-def check_login_status():
-    """检查登录状态"""
-    return jsonify({
-        'success': True,
-        'logged_in': is_logged_in(),
-        'username': session.get('username', '')
-    })
 
 
 @app.route('/api/photos', methods=['GET'])
@@ -262,11 +162,6 @@ def get_photos():
 def upload_photo():
     """上传照片"""
     app.logger.info('API: 收到上传请求')
-    
-    # 检查登录状态
-    if not is_logged_in():
-        app.logger.warning('上传失败: 未登录')
-        return jsonify({'success': False, 'error': u'请先登录'}), 401
     
     if 'photo' not in request.files:
         app.logger.warning('上传失败: 没有文件')
@@ -325,11 +220,6 @@ def delete_photo(photo_id):
     """删除照片"""
     app.logger.info('API: 请求删除照片 %s', photo_id)
     
-    # 检查登录状态
-    if not is_logged_in():
-        app.logger.warning('删除失败: 未登录')
-        return jsonify({'success': False, 'error': u'请先登录'}), 401
-    
     try:
         metadata = load_metadata()
         photo = None
@@ -364,15 +254,13 @@ def delete_photo(photo_id):
 def uploaded_file(filename):
     """提供上传的文件"""
     try:
-        app.logger.info('请求文件: %s', filename)
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         if not os.path.exists(filepath):
             app.logger.warning('文件不存在: %s', filename)
             return 'File not found', 404
-        app.logger.info('返回文件: %s', filepath)
         return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
     except Exception as e:
-        app.logger.error('访问文件失败 %s: %s', filename, str(e), exc_info=True)
+        app.logger.error('访问文件失败 %s: %s', filename, str(e))
         return str(e), 500
 
 

@@ -1,0 +1,394 @@
+/* ==================== 主题系统 ==================== */
+
+/* ==================== 新年主题 ==================== */
+body.theme-newyear {
+    background: linear-gradient(135deg, #8B0000 0%, #DC143C 50%, #FF4500 100%);
+    background-attachment: fixed;
+}
+
+body.theme-newyear::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 0, 0, 0.3) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+body.theme-newyear .navbar {
+    background: rgba(139, 0, 0, 0.9);
+    border-bottom: 2px solid #FFD700;
+}
+
+body.theme-newyear .nav-link:hover {
+    background: rgba(255, 215, 0, 0.2);
+    color: #FFD700;
+}
+
+body.theme-newyear .nav-link.active {
+    background: rgba(255, 215, 0, 0.3);
+    color: #FFD700;
+}
+
+body.theme-newyear .count-badge {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #8B0000;
+}
+
+/* 新年灯笼装饰 */
+.lantern-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.lantern {
+    position: absolute;
+    font-size: 3em;
+    animation: swingLantern 3s ease-in-out infinite;
+}
+
+.lantern:nth-child(1) { left: 10%; top: 100px; animation-delay: 0s; }
+.lantern:nth-child(2) { left: 30%; top: 120px; animation-delay: 0.5s; }
+.lantern:nth-child(3) { left: 50%; top: 90px; animation-delay: 1s; }
+.lantern:nth-child(4) { left: 70%; top: 110px; animation-delay: 1.5s; }
+.lantern:nth-child(5) { left: 90%; top: 100px; animation-delay: 2s; }
+
+@keyframes swingLantern {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+}
+
+/* 新年烟花效果 */
+.firework {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: fireworkExplode 1.5s ease-out forwards;
+}
+
+@keyframes fireworkExplode {
+    0% {
+        transform: translate(0, 0) scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(var(--tx), var(--ty)) scale(1);
+        opacity: 0;
+    }
+}
+
+/* 新年祝福语 */
+.newyear-greeting {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3em;
+    font-weight: bold;
+    color: #FFD700;
+    text-shadow: 
+        0 0 10px rgba(255, 215, 0, 0.8),
+        0 0 20px rgba(255, 0, 0, 0.6),
+        2px 2px 4px rgba(0, 0, 0, 0.8);
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+    animation: fadeInOut 3s ease-in-out;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* ==================== 生日主题 ==================== */
+body.theme-birthday {
+    background: linear-gradient(135deg, #FFE5E5 0%, #FFF0F5 25%, #E6F3FF 75%, #F0E6FF 100%);
+    background-attachment: fixed;
+}
+
+body.theme-birthday .navbar {
+    background: rgba(255, 182, 193, 0.95);
+    border-bottom: 2px solid #FF69B4;
+}
+
+body.theme-birthday .nav-logo,
+body.theme-birthday .nav-link {
+    color: #C71585;
+}
+
+body.theme-birthday .nav-link:hover {
+    background: rgba(255, 105, 180, 0.2);
+    color: #FF1493;
+}
+
+body.theme-birthday .nav-link.active {
+    background: rgba(255, 105, 180, 0.3);
+    color: #FF1493;
+}
+
+body.theme-birthday .count-badge {
+    background: linear-gradient(135deg, #FF69B4, #FF1493);
+}
+
+body.theme-birthday .count-label {
+    color: #C71585;
+}
+
+/* 生日气球 */
+.balloon-container {
+    position: fixed;
+    bottom: -100px;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.balloon {
+    position: absolute;
+    bottom: -100px;
+    font-size: 3em;
+    animation: floatUp 15s ease-in infinite;
+    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.3));
+}
+
+.balloon:nth-child(1) { left: 5%; animation-delay: 0s; }
+.balloon:nth-child(2) { left: 15%; animation-delay: 2s; }
+.balloon:nth-child(3) { left: 25%; animation-delay: 4s; }
+.balloon:nth-child(4) { left: 35%; animation-delay: 6s; }
+.balloon:nth-child(5) { left: 45%; animation-delay: 8s; }
+.balloon:nth-child(6) { left: 55%; animation-delay: 10s; }
+.balloon:nth-child(7) { left: 65%; animation-delay: 12s; }
+.balloon:nth-child(8) { left: 75%; animation-delay: 14s; }
+.balloon:nth-child(9) { left: 85%; animation-delay: 1s; }
+.balloon:nth-child(10) { left: 95%; animation-delay: 3s; }
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        transform: translateY(-50vh) translateX(20px) rotate(10deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-110vh) translateX(-20px) rotate(-10deg);
+        opacity: 0;
+    }
+}
+
+/* 生日彩带 */
+.confetti-container {
+    position: fixed;
+    top: -10px;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 10;
+    overflow: hidden;
+}
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #FF69B4;
+    top: -10px;
+    opacity: 1;
+    animation: confettiFall 4s linear infinite;
+}
+
+.confetti:nth-child(odd) {
+    background: linear-gradient(135deg, #FF69B4, #FFB6C1);
+}
+
+.confetti:nth-child(even) {
+    background: linear-gradient(135deg, #87CEEB, #B0E0E6);
+}
+
+.confetti:nth-child(3n) {
+    background: linear-gradient(135deg, #DDA0DD, #E6A8D7);
+}
+
+@keyframes confettiFall {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0.3;
+    }
+}
+
+/* 生日星星闪烁 */
+.star-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+    overflow: hidden;
+}
+
+.star {
+    position: absolute;
+    font-size: 1.5em;
+    animation: twinkle 2s ease-in-out infinite;
+}
+
+@keyframes twinkle {
+    0%, 100% { 
+        opacity: 0.3;
+        transform: scale(0.8);
+    }
+    50% { 
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+/* 生日蛋糕图标（可选） */
+.birthday-cake {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 4em;
+    animation: cakeBounce 2s ease-in-out infinite;
+    filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.3));
+    z-index: 5;
+    pointer-events: none;
+}
+
+@keyframes cakeBounce {
+    0%, 100% { transform: translateY(0) rotate(-5deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+}
+
+/* ==================== 主题切换器 ==================== */
+.theme-selector {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.theme-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 1.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.theme-btn:hover {
+    transform: scale(1.1);
+    border-color: rgba(255, 255, 255, 0.6);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+}
+
+.theme-btn.active {
+    border-color: #FFD700;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+    transform: scale(1.15);
+}
+
+.theme-btn-default {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.theme-btn-newyear {
+    background: linear-gradient(135deg, #DC143C, #FFD700);
+}
+
+.theme-btn-birthday {
+    background: linear-gradient(135deg, #FFB6C1, #FF69B4);
+}
+
+/* 主题切换面板 */
+.theme-panel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 25px;
+    margin-left: 10px;
+}
+
+.theme-label {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85em;
+    white-space: nowrap;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .lantern {
+        font-size: 2em;
+    }
+    
+    .balloon {
+        font-size: 2em;
+    }
+    
+    .newyear-greeting {
+        font-size: 2em;
+    }
+    
+    .birthday-cake {
+        font-size: 3em;
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .theme-label {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .lantern {
+        font-size: 1.5em;
+    }
+    
+    .balloon {
+        font-size: 1.5em;
+    }
+    
+    .newyear-greeting {
+        font-size: 1.5em;
+    }
+    
+    .theme-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 1.2em;
+    }
+}
+
